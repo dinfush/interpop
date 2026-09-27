@@ -20,3 +20,4 @@
 /// 类型即协议——serde 派生直接产出 wire 格式，Phase 1/2 scaffold 与 Phase 3 真实
 /// Socket 共用同一组类型（参数透传同构铁律，白皮书 §2）。
 pub mod contract;
+pub mod canvas_transition;
