@@ -1,0 +1,108 @@
+name: CI Ratchet Gatekeeper
+
+on:
+  push:
+    branches: ["main", "master", "phase1/*"]
+  pull_request:
+    branches: ["main", "master"]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  # ==========================================================================
+  # Gatekeeper 阶段 1: 物理红线与架构门禁 (G1 / G2 / G13-a)
+  # ==========================================================================
+  arch-governance:
+    name: G1 / G2 / G13-a Architectural Guard
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: G1 Gatekeeper: PR-01 白名单与黄金样本物理存在性断言
+        run: |
+          echo "Verifying PR-01 golden fixture files anchor at workspace root..."
+          test -f tests/golden/spawn_popup.json
+          test -f tests/golden/patch_slider.json
+          test -f tests/golden/error_target_owned.json
+          echo "G1 Assertion Passed: Golden fixtures anchored correctly at workspace root."
+
+      - name: G2 Gatekeeper: 生产 Crate 禁偷渡 Scaffold 依赖
+        run: |
+          echo "Auditing Cargo.toml files in core, render, atoms for scaffold leakage..."
+          if grep -rn "interpop-scaffold" interpop-core/ interpop-render/ interpop-atoms/ --include="Cargo.toml"; then
+            echo "CRITICAL ERROR: Illegal interpop-scaffold dependency found in production crate!"
+            exit 1
+          fi
+          echo "G2 Assertion Passed: Production crates are clean."
+
+      - name: G13-a Gatekeeper: 根 Profile 严禁 panic = abort 审计 (台账#17)
+        run: |
+          echo "Auditing profile.release for panic = abort prohibition..."
+          if grep -rn 'panic[[:space:]]*=[[:space:]]*"abort"' Cargo.toml; then
+            echo "CRITICAL ERROR: panic = 'abort' violates Constitution! Must remain unwind for fuse recovery."
+            exit 1
+          fi
+          echo "G13-a Assertion Passed: Unwind mechanism intact."
+
+  # ==========================================================================
+  # Gatekeeper 阶段 2: MSRV 1.86 地板通道 (G6 / G3 / Test)
+  # ==========================================================================
+  msrv-floor:
+    name: G6 MSRV 1.86 Baseline (Debian 13 Trixie)
+    needs: [arch-governance]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Install Rust 1.86 Toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: "1.86.0"
+
+      - name: G3 Gatekeeper: 全 Workspace 静态编译断言
+        run: cargo check --workspace --all-targets --locked
+
+      - name: PR-01 L0 契约与 Golden 样本锁定测试 (MSRV)
+        run: cargo test --workspace --all-targets --locked
+
+  # ==========================================================================
+  # Gatekeeper 阶段 3: Stable 最新通道与静态代码卫生 (G7)
+  # ==========================================================================
+  stable-latest:
+    name: G7 Stable-Latest & Zero-Warning Clippy
+    needs: [arch-governance]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Install Stable Rust & Clippy
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+
+      - name: G7 Gatekeeper: Clippy 零告警与清退弃用 API 断言
+        run: cargo clippy --workspace --all-targets --locked -- -D warnings
+
+      - name: Run Workspace Tests on Stable
+        run: cargo test --workspace --all-targets --locked
+
+  # ==========================================================================
+  # Gatekeeper 阶段 4: 供应链审计 (G11)
+  # ==========================================================================
+  security-audit:
+    name: G11 Cargo Audit Vulnerability Scan
+    needs: [arch-governance]
+    runs-on: ubuntu-latest
+    continue-on-error: false
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Audit Dependencies for Security Advisories (RUSTSEC)
+        uses: rustsec/audit-check@v2.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}

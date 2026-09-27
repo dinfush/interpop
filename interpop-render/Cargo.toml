@@ -2,6 +2,12 @@
 name = "interpop-render"
 version.workspace = true
 edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
 
 [dependencies]
-interpop-core = { path = "../interpop-core" }
+interpop-core = { path = "../interpop-core", version = "0.1.0" }
+
+# 后续 PR 增补占位说明：
+# PR-05 (SwapChain) 将在此增补: tiny-skia, nix
+# PR-06 (Paint) 将在此增补: 渲染管线内部依赖

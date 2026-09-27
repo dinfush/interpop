@@ -1,5 +1,5 @@
 [workspace]
-resolver = "2"
+resolver = "3"
 members = [
     "interpop-core",
     "interpop-render",
@@ -8,10 +8,9 @@ members = [
 ]
 
 [workspace.package]
-version      = "0.1.0"
-rust-version = "1.86"
+rust-version = "1.86"        # MSRV 地板 = Debian 13 (trixie) rustc 1.86 基准（台账#17 实证）
 edition      = "2024"
-authors      = ["INTERPOP Authors"]
+version      = "0.1.0"
 license      = "MIT OR Apache-2.0"
 
 [profile.release]
@@ -19,20 +18,26 @@ opt-level = 3
 lto = "thin"
 codegen-units = 1
 strip = "symbols"
-# ⛔ 严禁 panic = "abort" —— 台账#17 红线
-# §12.6 Taffy 三级熔断依赖 catch_unwind；abort 语义下进程在展开发生前即死，熔断器永不触发
-panic = "unwind"
+# ┌─────────────────────────────────────────────────────────────────┐
+# │ ⛔ 严禁 panic = "abort" —— 台账#17 红线                          │
+# │ §12.6 Taffy 三级熔断依赖 catch_unwind; abort 语义下进程在展开    │
+# │ 发生前即死，熔断器永不触发，“主循环永不崩溃”承诺失效。          │
+# │ Phase 1 即落位（构建图含此注释即成本≈0），G13-a 永续断言。        │
+# └─────────────────────────────────────────────────────────────────┘
 
-[workspace.dependencies]
-calloop               = "0.14"
-wayland-client        = "0.31"
-wayland-protocols     = "0.32"
+[workspace.dependencies]     # 地板层(IF-BluePrint 9.1): caret 下界，非精确锁
+calloop = "0.14"
+wayland-client = "0.31"
+wayland-protocols = "0.32"
 wayland-protocols-wlr = "0.3"
-serde                 = { version = "1.0", features = ["derive"] }
-serde_json            = "1.0"
-tiny-skia             = "=0.11"
-nix                   = { version = "0.29", features = ["mman", "fs"] }
-rtrb                  = "0.3"
-taffy                 = "0.5"
-cosmic-text           = "0.12"
-xkbcommon             = "0.8"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tiny-skia = "=0.11"          # ⚠ 唯一精确锁(golden 三元函数输入，§17.1/台账#12)
+nix = { version = "0.29", features = ["mman", "fs"] }
+rtrb = "0.3"                 # Phase 3 起
+taffy = "0.5"                # Phase 2 起
+cosmic-text = "0.12"         # Phase 2 起
+xkbcommon = "0.8"            # §15.1 矩阵成员; Phase 2 起(P2-7 KeyboardRouter)
+# image = "0.25" / resvg = "0.41" / wgpu = "0.20"(门控) / zbus = "4.0"(门控) /
+# accesskit = "0.16" + accesskit_unix = "0.6"(门控) ← §15.1 其余成员随对应 PR 引入
+# calloop-wayland-source = "0.4"  ← 工程层叶依赖，见 PR-03 注记

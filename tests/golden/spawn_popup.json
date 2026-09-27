@@ -1,0 +1,1 @@
+{"verb":"spawn","form":"popup","target":"vol-island","dismiss_policy":"manual","atoms":{"type":"box","children":[{"type":"fill","color":"#204060"}]},"force":false,"heartbeat_ms":5000,"anchor_rect":{"x":1720,"y":40,"w":64,"h":32}}

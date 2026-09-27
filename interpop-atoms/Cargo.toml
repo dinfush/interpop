@@ -2,6 +2,13 @@
 name = "interpop-atoms"
 version.workspace = true
 edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
 
 [dependencies]
-interpop-core = { path = "../interpop-core" }
+interpop-core = { path = "../interpop-core", version = "0.1.0" }
+interpop-render = { path = "../interpop-render", version = "0.1.0" }
+
+# 后续 PR 增补占位说明：
+# PR-06 (fill 探路原子) 将在此完善与 render 的对接
+# Phase 2 (Taffy / cosmic-text / 各原子) 将按各 PR 卡白名单逐步引入外部能力依赖

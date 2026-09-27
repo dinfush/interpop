@@ -2,7 +2,13 @@
 name = "interpop-core"
 version.workspace = true
 edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
 
 [dependencies]
 serde = { workspace = true }
 serde_json = { workspace = true }
+
+# 测试依赖说明：
+# 生产 dependencies 在集成测试中自动可用，无需重复登记。
+# 后续 PR 若需新增专用测试依赖（如 criterion / proptest），严格依对应 PR 卡触碰白名单增补。

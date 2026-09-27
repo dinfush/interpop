@@ -2,11 +2,24 @@
 name = "interpop-scaffold"
 version.workspace = true
 edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+# ┌─────────────────────────────────────────────────────────────────┐
+# │ ⚠ 临时脚手架生命周期纪律 (白皮书 §15.3 / SOP-P1 §1.3)          │
+# │ 本 crate 仅供 Phase 1 / Phase 2 临时桩驱动与验证使用。          │
+# │ 依赖白名单: 严格限定为 interpop-core 与 serde_json 两项。      │
+# │ CLI 解析归置裁决: 使用 std::env::args 手写最小解析 (PR-10 参数面│
+# │   仅 run --case/--out 两项)，⛔ 禁止引入 clap 等 arg-parse 依赖。 │
+# │ ⛔ 绝对禁止引入 interpop-render / interpop-atoms / wayland-*。 │
+# │ Phase 3 将按 P3-10 Zero-Trace 规程实施物理整目录抹除           │
+# │ (SOP-P3 生成时继承本条，PR 编号由 SOP-P3 定义)。                │
+# └─────────────────────────────────────────────────────────────────┘
+
+[dependencies]
+interpop-core = { path = "../interpop-core", version = "0.1.0" }
+serde_json = { workspace = true }
 
 [[bin]]
 name = "scaffold-p1"
 path = "src/main.rs"
-
-[dependencies]
-interpop-core = { path = "../interpop-core" }
-serde_json = { workspace = true }
