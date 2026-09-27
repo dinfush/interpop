@@ -1,0 +1,7 @@
+[package]
+name = "interpop-render"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+interpop-core = { path = "../interpop-core" }

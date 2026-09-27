@@ -1,0 +1,38 @@
+[workspace]
+resolver = "2"
+members = [
+    "interpop-core",
+    "interpop-render",
+    "interpop-atoms",
+    "interpop-scaffold",
+]
+
+[workspace.package]
+version      = "0.1.0"
+rust-version = "1.86"
+edition      = "2024"
+authors      = ["INTERPOP Authors"]
+license      = "MIT OR Apache-2.0"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+strip = "symbols"
+# ⛔ 严禁 panic = "abort" —— 台账#17 红线
+# §12.6 Taffy 三级熔断依赖 catch_unwind；abort 语义下进程在展开发生前即死，熔断器永不触发
+panic = "unwind"
+
+[workspace.dependencies]
+calloop               = "0.14"
+wayland-client        = "0.31"
+wayland-protocols     = "0.32"
+wayland-protocols-wlr = "0.3"
+serde                 = { version = "1.0", features = ["derive"] }
+serde_json            = "1.0"
+tiny-skia             = "=0.11"
+nix                   = { version = "0.29", features = ["mman", "fs"] }
+rtrb                  = "0.3"
+taffy                 = "0.5"
+cosmic-text           = "0.12"
+xkbcommon             = "0.8"
