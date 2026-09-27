@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>INTERPOP D-Gov · 文档体系总纲与生成时序</title>
+<style>
+  body{font-family:"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;max-width:1100px;margin:0 auto;
+       padding:28px 20px 80px;line-height:1.65;color:#1c1c1c;background:#fdfdfb}
+  h1{font-size:26px;border-bottom:3px solid #1f2937;padding-bottom:10px}
+  h2{font-size:21px;margin-top:44px;border-left:5px solid #1f2937;padding-left:10px}
+  h3{font-size:17px;margin-top:28px;color:#0f172a}
+  code{background:#eef1f5;padding:1px 5px;border-radius:4px;font-size:13px}
+  pre{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;overflow-x:auto;font-size:13px;line-height:1.5}
+  pre code{background:none;color:inherit;padding:0}
+  table{border-collapse:collapse;width:100%;font-size:13.5px;margin:10px 0}
+  th,td{border:1px solid #c9c9c2;padding:6px 9px;text-align:left;vertical-align:top}
+  th{background:#1f2937;color:#fff;font-weight:600}
+  tr:nth-child(even) td{background:#f6f6f0}
+  .badge{display:inline-block;font-size:11.5px;padding:1px 9px;border-radius:10px;border:1px solid;margin:0 3px 3px 0;white-space:nowrap;vertical-align:middle}
+  .b-done{color:#fff;background:#0b5b35;border-color:#0b5b35}
+  .b-wait{color:#444;border-color:#999;background:#f0f0f0}
+  .b-ban {color:#fff;background:#9c1c1c;border-color:#9c1c1c}
+  .b-con {color:#6b4a00;border-color:#8a6d1a;background:#fdf3d7}
+  .warn{color:#8a0f0f;font-weight:600}.ok{color:#0b5b35;font-weight:600}
+  .note{font-size:13px;color:#444}.note b{color:#1c1c1c}
+  blockquote{border-left:4px solid #8a6d1a;background:#fdf6e3;margin:12px 0;padding:8px 14px}
+  nav{background:#f1f1ea;border:1px solid #d8d8cf;border-radius:8px;padding:12px 18px;font-size:13.5px}
+  nav a{text-decoration:none;color:#0b4f7a}
+  .phase{border:1px solid #d8d8cf;border-radius:8px;padding:12px 16px;margin:16px 0;background:#fff}
+  .phase h3{margin-top:4px}
+  @media print{body{max-width:none;font-size:11.5px;padding:0}pre{white-space:pre-wrap;border-radius:0}nav{display:none}.phase{page-break-inside:avoid}}
+</style>
+</head>
+<body>
+
+<h1>INTERPOP D-Gov · 文档体系总纲与生成时序<br><span style="font-size:15px;color:#555">全部指导文件的清单 · 精确触发器 · 各阶段 SOP 骨架备查</span></h1>
+<p class="note">
+<b>定位</b>：元文档——登记文档体系本身（D0~D6 + SOP×4），不含任何新设计；全部内容为已裁决事项的汇总落盘。<br>
+<b>效力位阶</b>：白皮书 &gt; IF-BluePrint &gt; 各 SOP / D 系文档 &gt; 本总纲。<br>
+<b>生成法则</b>：① <b>触发器驱动</b>——每份执行文档有精确触发条件，缺一不生成，杜绝文书空转；② <b>同轨入库</b>——全文随对应实现 commit 落库（G12）；③ <b>台账 append-only</b>——丢弃/改判只追加不改写（本总纲第8章登记 D5 首版丢弃事件）。<br>
+<b>已成立台账</b>：【台账#N】指 IF-BluePrint 第12章条目。
+</p>
+
+<nav><b>目录</b>
+<b>1.</b> <a href="#c1">文档总表（D0~D6）</a> ｜
+<b>2.</b> <a href="#c2">生成时序总览（Phase 0 → Phase 4）</a> ｜
+<b>3.</b> <a href="#c3">SOP 共同模板</a> ｜
+<b>4.</b> <a href="#c4">SOP-P1（已发布全文）</a> ｜
+<b>5.</b> <a href="#c5">SOP-P2 骨架</a> ｜
+<b>6.</b> <a href="#c6">SOP-P3 骨架</a> ｜
+<b>7.</b> <a href="#c7">SOP-P4 骨架</a> ｜
+<b>8.</b> <a href="#c8">丢弃文档登记</a> ｜
+<b>9.</b> <a href="#c9">文档命名与存放规范</a>
+</nav>
+
+<!-- ============ 第1章 ============ -->
+<h2 id="c1">第1章 · 文档总表（D0 ~ D6）</h2>
+<table>
+<tr><th>编号</th><th>文档</th><th>受众</th><th>职责</th><th>状态</th><th>精确触发器（缺一不生成全文）</th></tr>
+<tr><td>D0</td><td>白皮书</td><td>全体</td><td>宪法与唯一基准；§18 修订门槛</td><td><span class="badge b-done">已冻结</span></td><td>已存在（给定）</td></tr>
+<tr><td>D1</td><td>IF-BluePrint 接口总清单<br><code>interpop-interfaces.html</code></td><td>内核工程师</td><td>L0+P1~P4 全量接口契约 · 裁决台账 · G 门禁映射 · 八剧本故障预演</td><td><span class="badge b-done">已发布</span></td><td>随 <code>phase1/PR-01</code> commit 入库；入库时同步台账#17/#18 抢救项</td></tr>
+<tr><td>D2</td><td>SOP-P1 执行作业指导书<br><code>interpop-sop-p1.html</code></td><td>内核工程师</td><td>PR-01~10 六要素卡 · 桩设计规范 · 验收运行手册 · 陷阱预演</td><td><span class="badge b-done">已发布</span></td><td>随 PR-01 commit 入库（第1.2节已追加 panic=unwind 红线）</td></tr>
+<tr><td>D2b</td><td>SOP-P2（第5章骨架）</td><td>内核工程师</td><td>PR-11~21 · 16+1 原子 · 租约与交互闭环</td><td><span class="badge b-wait">待触发</span></td><td><b>Phase 1 退出评审表全项 ✓ 当日</b>生成全文</td></tr>
+<tr><td>D2c</td><td>SOP-P3（第6章骨架）</td><td>内核工程师</td><td>PR-22~30 · scaffold 换线与物理删除 · CI 全面部署</td><td><span class="badge b-wait">待触发</span></td><td><b>Phase 2 退出评审表全项 ✓ 当日</b>生成全文</td></tr>
+<tr><td>D2d</td><td>SOP-P4（第7章骨架）</td><td>内核工程师</td><td>PR-31~37 · 语义闭合 · 五案卷 · 封板</td><td><span class="badge b-wait">待触发</span></td><td><b>Phase 3 退出评审表全项 ✓ 当日</b>生成全文</td></tr>
+<tr><td>D5</td><td>发行与打包指南<br><code>interpop-d5-release.html</code></td><td>打包/运维</td><td>产物规格 · 依赖矩阵 · systemd unit · 升级回滚</td><td><span class="badge b-wait">待触发</span><br><span class="badge b-ban">首版已丢弃</span></td><td><b>release 二进制存在 且 objdump NEEDED 实测数据在手</b>（Phase 1 末 PR-10 后）；骨架全文见第8章抢救登记</td></tr>
+<tr><td>D4</td><td>外部客户端开发手册<br><code>interpop-d4-clients.html</code></td><td>扩展生态开发者</td><td>NDJSON 动词实例库 · AtomSpec/PatchPayload 数据字典 · §9 DSL 模板</td><td><span class="badge b-wait">待触发</span></td><td><b>Phase 2 首个原子 payload 定型</b>时起草动词层（L0 已冻结可先行）；每定型一个原子追加一节，禁止凭空写全</td></tr>
+<tr><td>D3</td><td>验收案卷操作手册<br><code>interpop-d3-acceptance.html</code></td><td>测试/QA</td><td>§17.4 五案卷操作脚本 · G 门禁执行规格 · 金转录种子设计</td><td><span class="badge b-wait">待触发</span></td><td><b>Phase 3 末转录格式定型</b>后起草，Phase 4 开工前定稿</td></tr>
+<tr><td>D6</td><td>贡献者手册<br><code>interpop-d6-contrib.html</code></td><td>新加入者</td><td>新增原子操作规程 · 过门禁检查单 · 台账使用规范</td><td><span class="badge b-wait">待触发</span></td><td><b>Phase 4 中段，G1~G13 全部运转后</b>（写"如何过门禁"须以门禁在运转为前提）</td></tr>
+</table>
+<blockquote><b>明确永不生成的</b>：独立 ADR 库（D1 台账已承担）· 会议纪要（§18 明文不作依据）· 排期甘特图（进度由 G 门禁通过率客观呈现）。</blockquote>
+
+<!-- ============ 第2章 ============ -->
+<h2 id="c2">第2章 · 生成时序总览</h2>
+<pre><code>现在（Phase 0，零代码）
+ │  D0 ✅  D1 ✅  D2/SOP-P1 ✅  D-Gov(本册) ✅     ← 文档体系就位，缺口为零
+ ▼
+phase1/PR-01 ──────────── D1、SOP-P1 随 commit 入库（G12 首次咬合）
+ │        ：（PR-01→PR-10 执行；陷阱追加进 SOP-P1 第5章，append-only）
+PR-10 完成 ←── <b>D5 触发器到点</b>（二进制+NEEDED 在手）→ 重生 D5（含台账#17 全部抢救项）
+ │
+ ▼  Phase 1 退出评审全 ✓（SOP-P1 第6章）
+SOP-P2 全文生成 ── D4 动词层起草窗口开启（首个原子 payload 定型时）
+ │        ：（PR-11→PR-21；D4 随各原子定型逐节追加）
+ ▼  Phase 2 退出评审全 ✓
+SOP-P3 全文生成
+ │        ：（PR-22→PR-30；scaffold 物理删除；CI 全面部署）
+PR-30 完成 ←── <b>D3 触发器到点</b>（转录格式定型）→ 起草 D3
+ ▼  Phase 3 退出评审全 ✓
+SOP-P4 全文生成
+ │        ：（PR-31→PR-37；五案卷+浸泡+回放金转录）
+ ▼  Phase 4 封板评审
+D6 生成 ── 全体系定格（此后仅 §18 程序演化）</code></pre>
+<p class="note"><b>读法</b>：任意时刻打开本表，"状态=待触发"的文档<b>不存在是正确的</b>；若发现其存在而触发器未满足，即为文书空转违规，按三级分流处置。</p>
+
+<!-- ============ 第3章 ============ -->
+<h2 id="c3">第3章 · SOP 共同模板（四阶段同构）</h2>
+<table>
+<tr><th>章</th><th>内容</th><th>固定纪律</th></tr>
+<tr><td>1</td><td>开工前置检查单</td><td>上位阶段退出评审全 ✓ + 本阶段接口契约就位</td></tr>
+<tr><td>2</td><td>TDD 任务分解（PR 卡）</td><td>每卡六要素：<b>目标/前置/触碰白名单/测试先行规格/退出断言/活跃门禁</b>；严格顺序，跳序违规；编号全局递增不回收</td></tr>
+<tr><td>3</td><td>专项施工规范</td><td>P1=桩设计 · P2=原子实现规范 · P3=换线工艺 · P4=封板清单</td></tr>
+<tr><td>4</td><td>验收运行手册</td><td>§16 退出断言逐条映射机检/人工规程；断言不可降级</td></tr>
+<tr><td>5</td><td>陷阱预演</td><td>承接 IF-BluePrint 第11章八剧本的阶段子集；执行中发现新陷阱 append-only 追加</td></tr>
+<tr><td>6</td><td>退出评审流程</td><td>评审表 → 台账追加"Phase N 退出"行 → 下阶段开工授权</td></tr>
+<tr><td>A/B</td><td>门禁激活子集表 / 命令速查</td><td>G1~G13 只点亮不熄灭</td></tr>
+</table>
+
+<!-- ============ 第4章 ============ -->
+<h2 id="c4">第4章 · SOP-P1（<span class="badge b-done">已发布全文</span> · interpop-sop-p1.html）</h2>
+<div class="phase">
+<h3>Phase 1 · 立地皮与打底座 —— PR 一览</h3>
+<table>
+<tr><th>PR</th><th>标题</th><th>退出断言（摘要）</th><th>主要活跃门禁</th></tr>
+<tr><td>PR-01</td><td>L0 契约定稿 + golden JSON 锁定</td><td>往返/容忍/封禁反射三类测试全绿</td><td>G3/G6/G7/G11</td></tr>
+<tr><td>PR-02</td><td>状态机 + P1-9 单漏斗</td><td>6态×事件迁移穷举金表 100%</td><td>G9(迁移)</td></tr>
+<tr><td>PR-03</td><td>Wayland 连接 + 输出枚举 + 最小 Calloop</td><td>headless 枚举非空；空转 CPU 断言</td><td>G3/G6/G7</td></tr>
+<tr><td>PR-04</td><td>LayerMapper + panel 挂载</td><td>set_anchor/set_exclusive_zone 协议轨迹断言</td><td>G3/G6/G7</td></tr>
+<tr><td>PR-05</td><td>wl_shm SwapChain（memfd 双缓冲）</td><td>release 前复用拒绝；RefAuditor 雏形归零；stride 校验</td><td>G3/G6/G7</td></tr>
+<tr><td>PR-06</td><td>fill 原子 + 渲染管线 + Tier-A golden</td><td>三档分辨率（1080p@1.0/1440p@1.25/4K@1.5）哈希锁定</td><td>G3/G6/G7/<b>G12</b></td></tr>
+<tr><td>PR-07</td><td>popup + P1-5 Clamp &amp; Flip</td><td>九宫格 54 用例 + 吸附/自由分岔 + e2e 翻转</td><td>G3/G6/G7</td></tr>
+<tr><td>PR-08</td><td>合成器探测仲裁 + Mutter 拒绝制</td><td>8形态×3宿主 24 格矩阵；拒绝路径零 surface</td><td>G3/G6/G7</td></tr>
+<tr><td>PR-09</td><td>剩余五形态映射</td><td>8 形态映射矩阵全绿（§16 交付件完整性）</td><td>G3/G6/G7</td></tr>
+<tr><td>PR-10</td><td>scaffold 直注驱动器 + 验收总演练</td><td>四断言证据包落 docs/sop-p1-runbook-output/</td><td>G1(桩形态)/G2/G9/G12</td></tr>
+</table>
+<p class="note"><b>陷阱预演五则</b>：wl_shm 缓冲池泄漏(PR-05 挂表)· 分数缩放残影(1.25 档 golden 雷达)· Configuring 挂死(GuardTimeout)· calloop×wayland 桥接缺失(禁手写轮询)· wl_buffer 复用竞态。<b>已发布全文</b>含桩 API 白名单、Phase 3 换线核对清单、四断言操作规程、门禁激活时序（附录A）。</p>
+</div>
+
+<!-- ============ 第5章 ============ -->
+<h2 id="c5">第5章 · SOP-P2 骨架（<span class="badge b-wait">待触发</span>：Phase 1 退出评审全 ✓ 当日生成全文）</h2>
+<div class="phase">
+<h3>Phase 2 · 附血肉与通触觉 —— 预置骨架（全部内容源自已裁决条款，无新设计；触发时可按实际修订）</h3>
+<p class="note"><b>专项施工规范（第3章预置）</b>：原子单文件物理隔离（§7）+ 四 trait 混入；<b>交付排序 = 台账#3</b>：P0 七原子先行闭环 → P1 五原子 → P2 低频四原子；tray 以幽灵图元 + atom_fallback 交付（<span class="warn">拒绝缩围</span>——§16 门禁 + §8.3 原子职责定义，台账#3）。</p>
+<table>
+<tr><th>PR</th><th>标题</th><th>退出断言（预置）</th><th>依据</th></tr>
+<tr><td>PR-11</td><td>P2-1 能力 SPI 三 trait 落码（含 taffy::Style 词汇表例外注记）</td><td>三 trait 对 P1-8 根契约的混入编译面稳定</td><td>§7 / IF-BP 1.4</td></tr>
+<tr><td>PR-12</td><td>P2-2 LayoutEngine + taffy 集成 + 三级熔断</td><td>全树 ≤50μs / 子树 ≤15μs；panic 注入钩子(test) 熔断三路全绿</td><td>§12.6 / §17.1</td></tr>
+<tr><td>PR-13</td><td>P2-3 TextShaper + 加固版字形沙箱</td><td>沙箱自检三断言(is_empty/face_count/哈希三元)；CJK 折行冒烟</td><td>台账#2 / §17.1</td></tr>
+<tr><td>PR-14</td><td>P0 渲染类原子：box / text / progress / image</td><td>各自 golden + image 走 P3-9 预埋接口占位</td><td>§8.3</td></tr>
+<tr><td>PR-15</td><td>P0 交互原子：button / slider / switch + P2-9 DampedFollower</td><td>step 纯函数 property 测试；snap 直达；⛔ 接口层无 lerp</td><td>§8.1 / §0-#4</td></tr>
+<tr><td>PR-16</td><td>P2-6 LeaseLock（带 ConnId）+ P2-4 Registry 收口</td><td>ConnStub EOF → release_conn 全量释放；未开 feature → 幽灵+fallback</td><td>§8.2 / §5.2 / 台账#1</td></tr>
+<tr><td>PR-17</td><td>P1 梯队：grid / stack / list / input / scroll（+ P2-10 两能力）</td><td>VirtualList 可见窗口断言；ImeAnchor 光标矩形</td><td>§8.3 / 台账#3/#4</td></tr>
+<tr><td>PR-18</td><td>P2-7 输入归一化 + P2-8 DismissArbiter 四策略</td><td>touch 折叠/8×scale 容差；on_blur 保护期；决策 trace</td><td>§10 / §6.4</td></tr>
+<tr><td>PR-19</td><td>P2 低频梯队：path / surface / radio / checkbox + tray 降级</td><td>tray 无 DBus → 幽灵 + atom_fallback 异步出桩</td><td>§8.3</td></tr>
+<tr><td>PR-20</td><td>P2-5 DSL 宏展开器 + 复合组件守卫</td><td>badge/chip/session_tile 展开产物仅含基元；⛔ 零新原子文件</td><td>§9 / §18.1-2</td></tr>
+<tr><td>PR-21</td><td>Phase 2 验收总演练</td><td>§16 三断言：原子撑开画布 / 60Hz 直注过期快照渲染值单调(无抽搐) / EOF 释放租约</td><td>§16</td></tr>
+</table>
+<p class="note"><b>陷阱预演预置</b>：taffy panic 熔断误触发排查 · 字形沙箱 fontdb 语义漂移 · 拖拽租约竞态(八剧本#1 首次实测) · 活跃原子逼近 4096 水位(倒逼 VirtualList) · D4 数据字典与实现漂移(同轨 G12)。<br>
+<b>门禁点亮</b>：G10 自 PR-14 起活跃。</p>
+</div>
+
+<!-- ============ 第6章 ============ -->
+<h2 id="c6">第6章 · SOP-P3 骨架（<span class="badge b-wait">待触发</span>：Phase 2 退出评审全 ✓ 当日生成全文）</h2>
+<div class="phase">
+<h3>Phase 3 · 通神经与立中枢 —— 预置骨架</h3>
+<p class="note"><b>专项施工规范（第3章预置）= SOP-P1 第3.4 节换线核对清单的执行</b>：① 桩 API 零引用 grep ② FrameDecoder 产物与 golden JSON 逐字节同构 ③ wire 驱动重跑 Phase 1/2 验收案例，漏斗以下 diff=0 ④ G1/G2 切严格形态。</p>
+<table>
+<tr><th>PR</th><th>标题</th><th>退出断言（预置）</th><th>依据</th></tr>
+<tr><td>PR-22</td><td>P3-1 runtime 目录四级降级 + P3-2 UDS 服务器</td><td>降级档位 trace；SO_PEERCRED 校验；ECONNREFUSED→unlink 重绑</td><td>§5.3 / §5.2</td></tr>
+<tr><td>PR-23</td><td>P3-3 FrameDecoder</td><td>单行 JSON ≤5μs（Criterion）；64KB 断路器超限测试；产出与 golden 同构</td><td>§12.1 / §17.1</td></tr>
+<tr><td>PR-24</td><td>P3-4 双通道（P0 64 slots / P1 4096 条）</td><td>零动态扩容；溢出事件富化载荷；水位 gauge</td><td>§12.4 / 台账#5</td></tr>
+<tr><td>PR-25</td><td>P3-5 VerbDispatcher + P3-6 OwnershipTable —— <b>换线 PR</b></td><td>DirectDriver 删除；PING→PONG 全链；target_owned/Rebind/EOF 清退</td><td>§14 / §5.2 / 台账#15</td></tr>
+<tr><td>PR-26</td><td>P3-7 Calloop 全量注册（UDS/信号源并入）</td><td>0Hz 深度挂起复测；SIGTERM→五步析构预演</td><td>§11.1 / §13</td></tr>
+<tr><td>PR-27</td><td>P3-9 worker 白名单（FontScan 先行）</td><td>冷启动 fontdb 出环；回传 rtrb SPSC；⛔ 枚举外零任务</td><td>§11.1</td></tr>
+<tr><td>PR-28</td><td>scaffold 物理删除（P3-10）+ 核对清单执行</td><td>G1 严格空；G2 严格禁；发布二进制残留率 0.00%</td><td>§15.3 / §17.3</td></tr>
+<tr><td>PR-29</td><td>P3-8 五步析构 + P3-11 probe CLI + P3-12 panic 钩子</td><td>析构 ≤20ms 分步审计；八剧本#3/#7 工件可用</td><td>§13 / IF-BP 11</td></tr>
+<tr><td>PR-30</td><td>CI 全面部署 + Phase 3 验收</td><td>G8 金丝雀上线；双端矩阵；毫秒级拉起 headless-smoke；<b>D3 触发器到点</b></td><td>§17.3 / 台账#9/#12</td></tr>
+</table>
+<p class="note"><b>陷阱预演预置</b>：多客户端并发连接竞态 · socket 残留致起不来(8.1 同源) · 分帧断路器误伤合法长行 · 换线后行为漂移(diff=0 断言即雷达) · G8 首次金丝雀误报处置。</p>
+</div>
+
+<!-- ============ 第7章 ============ -->
+<h2 id="c7">第7章 · SOP-P4 骨架（<span class="badge b-wait">待触发</span>：Phase 3 退出评审全 ✓ 当日生成全文）</h2>
+<div class="phase">
+<h3>Phase 4 · 闭回环与生产封板 —— 预置骨架</h3>
+<table>
+<tr><th>PR</th><th>标题</th><th>退出断言（预置）</th><th>依据</th></tr>
+<tr><td>PR-31</td><td>P4-1 墓碑栅栏闭合 + P4-11 遥测文件</td><td>tombstone 早于 timestamp 静默丢弃；admit 三元计数落盘</td><td>§12.3 / 台账#5</td></tr>
+<tr><td>PR-32</td><td>P4-2 intent 回写 + P4-3 HeartbeatMonitor</td><td>EPIPE 尽力而为丢弃；150ms 离场期竞态作废→revive_in_place</td><td>§14.2 / §12.5</td></tr>
+<tr><td>PR-33</td><td>P4-4 wl_subsurface 借核 + P4-5 RefAuditor 严格化</td><td>PDEATHSIG + 1 VBlank 注销；ACTIVE_LEAKS=0（G5 严格态）</td><td>§13.1/13.4</td></tr>
+<tr><td>PR-34</td><td>P4-6 restyle 热重载 + P4-7 渲染死线熔断</td><td>微秒级换肤；RenderPipelineTimeout 出环</td><td>§12 / §14.2</td></tr>
+<tr><td>PR-35</td><td>P4-9 飞行记录器 + P4-10 回放器 + G9 完整态</td><td>gold 转录集回放哈希全等；确定性破坏 PR 红屏</td><td>台账#13/#14</td></tr>
+<tr><td>PR-36</td><td>五案卷验收（D3 手册执行）+ G4 双通道浸泡</td><td>案卷①~⑤无瑕疵；空载/60Hz 双浸泡漂移 ≤512KB</td><td>§17.4 / §17.2</td></tr>
+<tr><td>PR-37</td><td>封板评审 + 发行（<b>D5/D6 触发器到点</b>）</td><td>G13 四子断言全绿；包文件清单三行全集；台账"Phase 4 封板"行</td><td>台账#17 / §17</td></tr>
+</table>
+<p class="note"><b>陷阱预演预置</b>：浸泡偶发漂移归因(dhat) · 回放哈希跨机假红(沙箱三元自检) · intent 回写风暴反压 · 心跳与 dismiss 竞态窗口 · 封板后 §18 修订流程演练（用一条真实小修订走全程，验证放行程序本身）。</p>
+</div>
+
+<!-- ============ 第8章 ============ -->
+<h2 id="c8">第8章 · 丢弃文档登记（诚实记录，append-only）</h2>
+<table>
+<tr><th>文档</th><th>事件</th><th>缘由</th><th>抢救落点（合宪改写）</th></tr>
+<tr><td>D5 首版<br>(interpop-d5-release.html v1)</td><td><span class="badge b-ban">已丢弃</span><br>台账#18</td><td>生成时机违规：路线图明定"Phase 1 末触发"，却在触发器满足前生成了全文——构成文书空转（§17.1 文档同轨门禁所要拦截的形态），由用户裁决否决</td><td>① <b>panic=unwind 红线</b> → SOP-P1 第1.2 节追加（PR-01 落位，成本≈0）<br>② <b>G13 打包断言门禁</b>（profile/特性闭包/NEEDED 固化/发行面零痕迹）→ IF-BluePrint 第14章 G 表追加，标注"Phase 1 末激活"<br>③ <b>台账#17</b>（trixie apt 基线 rustc 1.85.0+dfsg3-1 不作构建途径(明示放弃);构建基线 = debian/13 容器(Incus)内 rustup 1.86 · edition 2024 · glibc 地板 2.41 由容器钉死;分发 = 预编译 .deb,G13 三断言(NEEDED 固化 / glibc ≤2.41 / 干净容器冒烟)机器验证 · wayland 0.31 默认纯 Rust 后端实证 · 回滚安全推论）→ IF-BluePrint 第12章追加<br>④ 全文骨架与七则打包剧本 → 保留于本总纲第2/8章待触发重生</td></tr>
+</table>
+<blockquote><b>制度价值</b>：本次丢弃验证了触发器法则的牙齿——元文档（本总纲）合法存在，执行文档（D5）提前存在即违规。后续任何文档生成动作先查第1章触发器列。</blockquote>
+
+<!-- ============ 第9章 ============ -->
+<h2 id="c9">第9章 · 文档命名与存放规范</h2>
+<pre><code>repo/docs/
+├── whitepaper.pdf                    # D0（只读基线，随修订门槛 §18 换版）
+├── interpop-interfaces.html          # D1 IF-BluePrint（含台账，append-only 区第12章）
+├── interpop-doc-gov.html             # 本册 D-Gov
+├── sop/
+│   ├── interpop-sop-p1.html          # 已发布 → 随 PR-01 入库
+│   ├── interpop-sop-p2.html          # 触发后生成
+│   ├── interpop-sop-p3.html          # 触发后生成
+│   └── interpop-sop-p4.html          # 触发后生成
+├── release/interpop-d5-release.html  # 触发后生成
+├── clients/interpop-d4-clients.html  # 触发后起草，逐节追加
+├── acceptance/interpop-d3-acceptance.html  # Phase 3 末起草
+└── contrib/interpop-d6-contrib.html  # Phase 4 中段生成</pre></code>
+<p class="note"><b>版本纪律</b>：全部 HTML 单文件自包含、零外部依赖、打印友好；文档头部必须含效力位阶与同轨声明；G12 对文档的约束 = 断言与代码不符即红（"文档同轨门禁"）。<b>本总纲自身</b>：状态列随各触发器达成而更新（此为元数据更新，非文书空转）。</p>
+
+<p style="margin-top:50px;border-top:1px solid #ccc;padding-top:14px" class="note">
+INTERPOP · D-Gov · 文档体系总纲与生成时序 —— 元文档 · 登记全部指导文件之清单/时机/骨架 · 单文件自包含 · 零外部依赖 · 打印留档友好<br>
+文档体系当前缺口为零 · 下一份文档来自执行而非写作 · 台账 append-only
+</p>
+</body>
+</html>

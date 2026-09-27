@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>INTERPOP 接口总清单 · 全局执行蓝图（IF-BluePrint）</title>
+<style>
+  body{font-family:"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;max-width:1100px;margin:0 auto;
+       padding:28px 20px 80px;line-height:1.65;color:#1c1c1c;background:#fdfdfb}
+  h1{font-size:26px;border-bottom:3px solid #1f2937;padding-bottom:10px}
+  h2{font-size:21px;margin-top:44px;border-left:5px solid #1f2937;padding-left:10px}
+  h3{font-size:17px;margin-top:28px;color:#0f172a}
+  h4{font-size:15px;margin:18px 0 6px}
+  code{background:#eef1f5;padding:1px 5px;border-radius:4px;font-size:13px}
+  pre{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;overflow-x:auto;font-size:13px;line-height:1.5}
+  pre code{background:none;color:inherit;padding:0}
+  table{border-collapse:collapse;width:100%;font-size:13.5px;margin:10px 0}
+  th,td{border:1px solid #c9c9c2;padding:6px 9px;text-align:left;vertical-align:top}
+  th{background:#1f2937;color:#fff;font-weight:600}
+  tr:nth-child(even) td{background:#f6f6f0}
+  .badge{display:inline-block;font-size:11.5px;padding:1px 9px;border-radius:10px;border:1px solid;margin:0 3px 3px 0;white-space:nowrap;vertical-align:middle}
+  .b-l0  {color:#8a0f0f;border-color:#8a0f0f;background:#fdeaea}
+  .b-con {color:#6b4a00;border-color:#8a6d1a;background:#fdf3d7}
+  .b-sig {color:#0b4f7a;border-color:#0b4f7a;background:#e6f1fa}
+  .b-gate{color:#4a2a7a;border-color:#4a2a7a;background:#f0e9fb}
+  .b-diag{color:#0b5b35;border-color:#0b5b35;background:#e6f6ec}
+  .b-test{color:#444;border-color:#999;background:#f0f0f0}
+  .b-ban {color:#fff;background:#9c1c1c;border-color:#9c1c1c}
+  .iface{border:1px solid #d8d8cf;border-radius:8px;padding:12px 16px;margin:14px 0;background:#fff}
+  .iface h4{margin-top:0}
+  .note{font-size:13px;color:#444}
+  .note b{color:#1c1c1c}
+  blockquote{border-left:4px solid #8a6d1a;background:#fdf6e3;margin:12px 0;padding:8px 14px}
+  nav{background:#f1f1ea;border:1px solid #d8d8cf;border-radius:8px;padding:12px 18px;font-size:13.5px}
+  nav a{text-decoration:none;color:#0b4f7a}
+  .toc2{columns:2;column-gap:30px}
+  @media print{body{max-width:none;font-size:11.5px;padding:0}
+    pre{white-space:pre-wrap;border-radius:0} nav{display:none}
+    .iface{page-break-inside:avoid}}
+</style>
+</head>
+<body>
+
+<h1>INTERPOP 接口总清单 · 全局执行蓝图</h1>
+<p class="note">
+<b>定位</b>：白皮书（唯一基准）§15~§17 绿灯路径的<b>接口级展开 + 裁决台账</b>。<br>
+<b>效力位阶</b>：白皮书 &gt; 本文档 &gt; 一切会议纪要/草稿；冲突时以白皮书为准，本文档相应条目作废并走第13章变更控制。<br>
+<b>修订门槛</b>：同白皮书 §18 —— 任何修订必须附代码或基准数据，随对应实现 commit 同轨进入。<br>
+<b>台账纪律</b>：第12章裁决台账 <b>append-only</b>——新裁决追加行，不改旧行；修正以新行引用旧行号。工程演进史由仓库 commit 历史承担。
+</p>
+
+<nav><b>目录</b>
+<div class="toc2">
+1. <a href="#ch1">总则：推导律 · 分界律 · 工程律 · 借鉴过滤器</a><br>
+2. <a href="#ch2">标签体系（全文图例）</a><br>
+3. <a href="#ch3">L0 契约层（Phase 1 开工前冻结）</a><br>
+4. <a href="#ch4">Phase 1 · 立地皮与打底座（P1-1 ~ P1-9）</a><br>
+5. <a href="#ch5">Phase 2 · 附血肉与通触觉（P2-1 ~ P2-10）</a><br>
+6. <a href="#ch6">Phase 3 · 通神经与立中枢（P3-1 ~ P3-12）</a><br>
+7. <a href="#ch7">Phase 4 · 闭回环与生产封板（P4-1 ~ P4-11）</a><br>
+8. <a href="#ch8">§17.4 五大黑盒案卷 ↔ 接口映射</a><br>
+9. <a href="#ch9">版本策略：三层模型与两端矩阵</a><br>
+10. <a href="#ch10">观测三档与接口定位审计总表</a><br>
+11. <a href="#ch11">运行时故障预演表（八剧本）</a><br>
+12. <a href="#ch12">裁决台账</a><br>
+13. <a href="#ch13">变更控制与扩展决策树</a><br>
+14. <a href="#ch14">退出准则总映射与 CI 门禁清单</a><br>
+A. <a href="#appA">附录A · 禁止立项清单（接口形态）</a><br>
+B. <a href="#appB">附录B · 白皮书条款交叉引用索引</a>
+</div>
+</nav>
+
+<!-- ======================= 第1章 ======================= -->
+<h2 id="ch1">第1章 · 总则</h2>
+
+<h3>1.1 四条推导律（接口设计的宪法依据）</h3>
+<table>
+<tr><th>#</th><th>推导律</th><th>出处</th><th>对接口设计的强制约束</th></tr>
+<tr><td>①</td><td><b>参数透传同构铁律</b>：测试驱动与网络 IPC 完全同构，接入真实 Socket 时核心渲染逻辑变更率 0.00%</td><td>§2</td><td>Phase 1/2 的 scaffold 不得另造测试接口，只能"直注"最终 IPC 的同构强类型；<b>接口形状以 Phase 3/4 终态为准倒推</b></td></tr>
+<tr><td>②</td><td><b>模块拓扑锁死</b></td><td>§15.2</td><td>契约类型归 interpop-core；渲染切面归 interpop-render；原子切面归 interpop-atoms；scaffold 仅许依赖 core，反向严禁</td></tr>
+<tr><td>③</td><td><b>白名单收敛</b></td><td>§11.1 / §14.2 / §0</td><td>线程任务接口 = 封闭枚举（3 项）；下行事件 = 封闭枚举（7 项）；<b>接口枚举本身即宪法，加变体须走 §18 门槛</b></td></tr>
+<tr><td>④</td><td><b>有意预留不补齐</b></td><td>§18.1</td><td>不为复合组件设内核接口；不为 golden hash 预写实测值；wgpu/zbus/accesskit 以 Feature 门控位预留</td></tr>
+</table>
+
+<h3>1.2 三条分界律（生产 / 调试平衡的裁决规则）</h3>
+<table>
+<tr><th>#</th><th>分界律</th><th>内容</th></tr>
+<tr><td>①</td><td><b>出线即生产</b></td><td>凡出现在 NDJSON wire 上的接口都是生产契约，受 §14.2 冻结——恒为 <b>5 动词 + 7 事件</b>。调试信息一律不出线；确需客户端可见，只能折叠进既有 warning/error 的 reason 枚举，新增枚举变体 = 协议变更 → §18 门槛。<b>平衡由通道拓扑保证，不靠自觉。</b></td></tr>
+<tr><td>②</td><td><b>观测三档</b></td><td>进程内（tracing / debug_assertions，完全自由）→ 取证文件（runtime-dir 下的 *.log，带 <code>schema_version</code> 自由演进，不触发冻结）→ 出线（7 事件，§18 门槛）。<b>默认最低档。</b></td></tr>
+<tr><td>③</td><td><b>三种合法归宿</b></td><td>出线（生产契约）/ 诊断档（进程内或文件）/ 测试档（#[cfg(test)] / dev-dependency / feature="debug-tools"）。<b>没有第四种。</b>任何"后台写日志线程"冲动属 §11.1 白名单扩充 → 须附 Criterion 数据走 §18。</td></tr>
+</table>
+
+<h3>1.3 两条工程律（随首个实现 commit 同轨落盘）</h3>
+<table>
+<tr><th>#</th><th>工程律</th><th>内容</th></tr>
+<tr><td>①</td><td><b>MSRV 地板</b></td><td>workspace 声明 <code>rust-version = "1.86"</code>、<code>edition = "2024"</code>，注释标注 <b>Debian 13 (trixie) rustc 基准</b>（1.86 系 = edition 2024 首发编译器）。CI 双端矩阵见第9章。</td></tr>
+<tr><td>②</td><td><b>内部 semver 纪律</b></td><td>0.x 阶段 minor 版本变更 = breaking；跨 crate 调用必须显式升版本号。效果：凡需下游同步升级的变更<b>在 Cargo 依赖解析层强制可见</b>，静默连锁从"可能"变为"不可能"。</td></tr>
+</table>
+
+<h3>1.4 第三方类型切面纪律（可验证性质）</h3>
+<blockquote><b>第三方类型不出切面，跨切面契约零第三方类型。</b><br>
+· L0 契约与 NDJSON wire：100% 自有类型——taffy/wayland/zbus 版本变更<b>物理上不可能</b>触达外部客户端；<br>
+· wayland / wl_shm 类型封闭在 core/render 的 Wayland 切面；wgpu 被 SwapChain 自有 trait 遮蔽（P1-6）；zbus / accesskit 各自封在 Feature 门控模块内；<br>
+· <b>唯一例外</b>：§7 原文 <code>LayoutNode::layout_style -&gt; &amp;taffy::Style</code>——有意词汇表选择。波及半径 = interpop-atoms + core 内部布局模块，<b>到 atoms 为止，永不过线</b>。taffy 升级时合规定性：DSL 词汇表修订 → §18 附代码证据。</blockquote>
+
+<h3>1.5 借鉴过滤器（复刻/借鉴网络方案的三判据）</h3>
+<table>
+<tr><th>过滤器</th><th>判据</th><th>示例</th></tr>
+<tr><td>① 许可证合规</td><td>MIT/Apache-2.0/BSD/Zlib 可直接复刻；MPL-2.0 文件级引用；GPL/AGPL 仅许重写式借鉴思想且隔离审计，或回避</td><td>rtrb（MIT/Apache 双许可）可复刻 SPSC 模式</td></tr>
+<tr><td>② 架构符合性</td><td>被借鉴方案不得携带 §0 七封禁任一形态，实现细节必须剥离后再借</td><td>常见 GUI 库的 C-ABI 插件（封禁#1）、三线程拓扑（封禁#5）、Lerp 追赶（封禁#4）一律剥离</td></tr>
+<tr><td>③ 基准达标</td><td>借入代码必须过 §17.1 Criterion 断言</td><td>现成分帧器若单行解析 &gt;5μs，弃用自研</td></tr>
+</table>
+<p class="note"><b>借鉴性映射</b>——可整体借鉴：BytesMut 流式分帧、SPSC 环形缓冲、memfd_create 共享内存池、Critical Damped EMA（§11.2 已给公式）。只借思想必须自研：P0/P1 双通道背压、租约锁（连接生命周期绑定语义无同构物）、§6.1 八形态 Layer-Shell 映射。禁止借鉴：任何以 .so 插件注册为核心的扩展体系（封禁#1 一票否决）。</p>
+
+<!-- ======================= 第2章 ======================= -->
+<h2 id="ch2">第2章 · 标签体系（全文图例）</h2>
+<table>
+<tr><th>冻结级（badge）</th><th>语义</th><th>变更程序</th></tr>
+<tr><td><span class="badge b-l0">L0冻结</span></td><td>随 L0 契约在 Phase 1 开工前冻结</td><td>§18 门槛（附代码+基准数据）</td></tr>
+<tr><td><span class="badge b-con">宪法冻结</span></td><td>直接派生白皮书宪法条款（如 WorkerJob 三变体）</td><td>§18 门槛</td></tr>
+<tr><td><span class="badge b-sig">签名冻结</span></td><td>引入时签名锁定，Phase 3/4 仅填行为不改签名</td><td>签名变更 = §18；行为闭合 = 正常 commit</td></tr>
+<tr><td><span class="badge b-gate">Feature门控</span></td><td>默认不启用；未启用 → 0 尺寸幽灵图元 + <code>atom_fallback</code>（§8.3 降级契约）</td><td>门控行为本身受测（§18.1-4）</td></tr>
+<tr><td><span class="badge b-diag">诊断档</span></td><td>进程内 tracing 或 runtime-dir 文件；文件带 schema_version 自由演进</td><td>自由（不出线）</td></tr>
+<tr><td><span class="badge b-test">测试专用</span></td><td>#[cfg(test)] / dev-dependency；不入生产二进制（§15.3 零痕迹纪律）</td><td>自由</td></tr>
+<tr><td><span class="badge b-ban">禁止立项</span></td><td>§0 封禁或 §18.1 预演否决的形态</td><td>任何阶段不得出现</td></tr>
+</table>
+<p class="note"><b>定位标签</b>：<span class="badge b-l0">生产</span> 出线或直接影响出线行为 ｜ <span class="badge b-diag">诊断</span> 文件/trace 工件 ｜ <span class="badge b-test">测试</span> 仅测试构建 ｜ <span class="badge b-sig">双用</span> 生产+诊断。</p>
+
+<!-- ======================= 第3章 ======================= -->
+<h2 id="ch3">第3章 · L0 契约层 <span class="badge b-l0">L0冻结</span></h2>
+<p class="note">归置：<code>interpop-core/src/contract.rs</code>。<b>Phase 1 开工前冻结，全程 0 变更</b>（除走 §18）。本层是"类型即协议"——serde 直接产出 wire 格式，Phase 1/2 scaffold 与 Phase 3 真实 Socket 共用同一组类型（推导律①）。</p>
+
+<div class="iface">
+<h4>L0-1 顶层动词 Request <span class="badge b-l0">L0冻结</span><span class="badge b-l0">生产</span></h4>
+<pre><code>pub enum Request {
+    Ping,                                   // 握手检活（§14.1 防双开）
+    Spawn(SpawnRequest),                    // 申请地皮（两阶段重载幂等）
+    Patch(PatchRequest),                    // 高频局部更新（走 P1 脏表）
+    Dismiss { target: TargetId },           // 双阶段平滑离场
+    Restyle(RestyleRequest),                // 整树设计令牌广播
+}</code></pre>
+<ul class="note">
+<li><b>依据</b>：§14.1 顶层动词契约表。<b>收敛 5 项</b>；intent 为反方向事件，不在此列。</li>
+<li><b>附注</b>（台账#6）：未知动词的处置 = 实现层收敛映射到既有四枚举中最贴近的 <code>protocol_restricted</code>；若需独立 reason 即触发 §18。serde <b>不启用 deny_unknown_fields</b> → 未知字段容忍、缺省字段 Option 兜底，获得零契约成本的向前兼容（台账#6）。</li>
+</ul>
+</div>
+
+<div class="iface">
+<h4>L0-2 SpawnRequest <span class="badge b-l0">L0冻结</span><span class="badge b-l0">生产</span></h4>
+<pre><code>pub struct SpawnRequest {
+    pub form: Form,                     // 8 大形态枚举（见下）
+    pub target: TargetId,
+    pub dismiss_policy: DismissPolicy,  // manual(缺省)/click_outside/timeout/on_blur
+    pub atoms: AtomSpec,                // DSL 声明式原子树根（§9）
+    pub output: Option&lt;OutputId&gt;,
+    pub force: bool,                    // 同 UID 强制接管（§5.2）
+    pub heartbeat_ms: Option&lt;u32&gt;,      // 心跳清退（§12.5）
+    pub anchor_rect: Option&lt;Rect&gt;,      // 仅 form:popup 有效（§6.1 吸附形态入口）
+}
+pub enum Form { Panel, Drawer, Popup, Overlay, Spotlight, Widget, Wallpaper, Window }</code></pre>
+<ul class="note">
+<li><b>依据</b>：§14.1 / §5.2 / §6.1。Option 字段即白皮书的前向兼容设计（台账#6）。</li>
+<li><b>附注</b>：protocol_version 字段<b>默认不添加</b>（台账#6）——版本追踪由 commit 历史承担（§18.1-6），显式字段须走 §18。</li>
+</ul>
+</div>
+
+<div class="iface">
+<h4>L0-3 PatchRequest <span class="badge b-l0">L0冻结</span><span class="badge b-l0">生产</span></h4>
+<pre><code>pub struct PatchRequest {
+    pub target: TargetId,
+    pub atom_id: AtomId,
+    pub timestamp: u64,        // 必须为 CLOCK_MONOTONIC 微秒整数（§12.3）
+    pub payload: PatchPayload, // 幂等绝对值快照（按原子分键收敛）
+}</code></pre>
+<ul class="note"><li><b>依据</b>：§12.2/§12.3。<b>绑定契约</b>：脏表丢弃安全 ⇔ 载荷为绝对值快照——两条缺一即为残缺引用（宪法级注释必须写入源码）。</li></ul>
+</div>
+
+<div class="iface">
+<h4>L0-4 下行事件 Event <span class="badge b-l0">L0冻结</span><span class="badge b-l0">生产</span></h4>
+<pre><code>pub enum Event {
+    Pong,
+    Dismissed      { target: TargetId },
+    Intent         { target: TargetId, atom_id: AtomId, action: IntentAction },
+    AtomFallback   { target: TargetId, atom_id: AtomId, reason: FallbackReason },
+    BackpressureWarning { dropped_atom: AtomId, last_applied: PatchPayload,
+                         tombstone_us: u64 },                    // Schema 冻结（§12.4）
+    Warning        { reason: WarningReason },   // 如：驱动后备降级（§11.2）
+    Error          { reason: ErrorReason },
+}
+pub enum ErrorReason { TargetOwned, UnsupportedLayerInMutter,
+                       ProtocolRestricted, RenderPipelineTimeout }</code></pre>
+<ul class="note">
+<li><b>依据</b>：§14.2。<b>收敛 7 项，禁止未登记事件出环</b>（§18.1-5 预演项，收敛即防漂移设计）。</li>
+<li><b>附注</b>（台账#8）：<b>过线即契约，不过线即实现</b>——凡经 wire 出环的 error 四枚举全部冻结为契约级；实现域内部错误留在 Rust 类型系统（<code>Result&lt;T, InternalError&gt;</code>）自由演化，永不过线。<b>拒绝</b> <code>code:u16 + detail:String</code> 开放变体——那等于给收敛枚举开后门。</li>
+<li><b>附注</b>：backpressure_warning <b>不加 usage 字段</b>（台账#5）；对账能力由既有富化载荷承担（last_applied + tombstone_us，"我发的 90% 哪儿去了"可直接对账）。水位可观测走文件档（P4-11）。</li>
+</ul>
+</div>
+
+<div class="iface">
+<h4>L0-5 共享词汇类型 <span class="badge b-l0">L0冻结</span></h4>
+<pre><code>pub type CanvasId = u64;  pub type TargetId = String;
+pub type LeaseId  = String;  pub type ConnId = u32;
+
+pub enum DismissPolicy { Manual, ClickOutside, Timeout { ms: u32 }, OnBlur }  // §6.4
+
+// IntentAction：P0 交互原子（button/slider/switch/input）基线封闭集
+pub enum IntentAction { Activate, Drag { value: f64 },
+                        Release { value: f64 }, Submit { text: String } }
+// 附注：新交互原子立项如需新动作 → §18 增补变体（L0 冻结后无静默扩充）。
+
+// AtomSpec 变体 = 18 = §8.3 17 项标准基元 + §16 fill 探路原子(台账#20):
+// P0: box text button slider switch progress image
+// P1: grid stack list input scroll
+// P2: path surface radio checkbox ｜ 门控: tray
+// ⛔ badge/chip/session_tile 不得出现于此 —— 仅存在于 DSL 宏展开层（§9 守卫/§18.1-2）</code></pre>
+</div>
+
+<!-- ======================= 第4章 ======================= -->
+<h2 id="ch4">第4章 · Phase 1 · 立地皮与打底座（P1-1 ~ P1-9）</h2>
+<p class="note">切面目标（§16）：一次性全量交付 8 大画布映射状态机；fill 探路原子与 wl_shm 提交链路。驱动方式 = scaffold 直注 SpawnRequest 同构 struct（<b>假传输、真内核</b>）。</p>
+
+<div class="iface">
+<h4>P1-1 画布生命周期状态机 CanvasHost <span class="badge b-sig">签名冻结</span><span class="badge b-l0">生产</span></h4>
+<pre><code>pub enum CanvasState { Unmapped, Configuring, Active, Dismissing, Reclaimed, Destroyed }
+pub trait CanvasHost {
+    fn mount(&amp;mut self, req: &amp;SpawnRequest) -&gt; Result&lt;CanvasId, ErrorReason&gt;;
+    fn begin_dismiss(&amp;mut self, id: CanvasId);   // 状态写入一律改道 P1-9 漏斗
+    fn reclaim(&amp;mut self, id: CanvasId);         // 解绑 wl_surface，归还地皮与显存
+    fn revive_in_place(&amp;mut self, id: CanvasId); // Dismissing 态原地复活（P4-3 调用）
+    fn reset_anim_clock(&amp;mut self, id: CanvasId);
+}</code></pre>
+<ul class="note">
+<li><b>依据</b>：§6.3 双阶段离场状态机；§12.5 冲撞仲裁挂载点。</li>
+<li><b>附注</b>（台账#1）：CanvasHost <b>不持有 LeaseLock 参数</b>——租约熔断由 P1-9 漏斗内联，层次不倒挂。Configuring 失败直达 Destroyed，<b>不存在 Configuring→Dismissing 迁移</b>（§6.3 唯一拓扑）。</li>
+</ul>
+</div>
+
+<div class="iface">
+<h4>P1-9 状态迁移单漏斗 transition() <span class="badge b-sig">签名冻结</span><span class="badge b-con">宪法冻结(拓扑)</span><span class="badge b-l0">双用</span> <code>interpop-core/src/canvas_transition.rs</code></h4>
+<pre><code>pub enum DismissTrigger { Arbiter(DismissReason),   // P2-8 四策略汇入
+                          HeartbeatTimeout,          // §12.5
+                          ConnectionEof,             // §5.2 EOF 铁律
+                          ExternalDismiss,           // §14.1 动词
+                          ForceTakeover }            // §5.2 force:true 接管
+pub enum CanvasEvent { Spawn(SpawnRequest), Dismiss(DismissTrigger),
+                       AnimFinished, SurfaceDestroyed, RebindSpawn,
+                       GuardTimeout }   // 陷阱5.3 守护载体(台账#21;拓扑零变更)
+// transition(): 穷举 match §6.3 拓扑；CanvasState 字段私有化，
+// 越权迁移（如 Configuring→Dismissing）在此<b>不可表示</b>；
+// BeginDismiss 分支内联：注销 input_region → 强制熔断该 Target 名下全部租约；
+// ForceTakeover 分支复用同一熔断（台账#1：治 SIGSTOP 抢管场景）。</code></pre>
+<ul class="note"><li><b>依据</b>：§12.5 开头明文"状态机拓扑<b>唯一定义于 §6.3</b>"——本漏斗即该权威的机器体现（台账#7）。配套 CI：<b>状态迁移穷举金表测试</b>。所有触发来源（Arbiter/Heartbeat/EOF/External）在此一目了然，"哪些事件来自谁"从文档问题变为类型系统问题。</li></ul>
+</div>
+
+<div class="iface">
+<h4>P1-2 形态映射 LayerMapper <span class="badge b-sig">签名冻结</span><span class="badge b-l0">生产</span></h4>
+<pre><code>pub struct LayerMapper;
+impl LayerMapper { pub fn plan(form: Form) -&gt; LayerPlan; }
+// panel→Layer::Top+exclusive_zone / drawer→Overlay / window→xdg_toplevel / 其余按 §6.1 表固化</code></pre>
+</div>
+
+<div class="iface">
+<h4>P1-3 合成器探测与 Mutter 降维仲裁 <span class="badge b-sig">签名冻结</span><span class="badge b-l0">双用</span></h4>
+<pre><code>pub trait CompositorProbe { fn detect(&amp;self) -&gt; CompositorKind; }
+pub fn arbiter_verdict(form: Form, host: CompositorKind) -&gt; Verdict;
+// AllowDim(panel/popup/spotlight) | Native(window)
+// | Reject{ reason: UnsupportedLayerInMutter | ProtocolRestricted }
+// 宁可不画，绝不作恶；诊断档：探测结果与裁决档位落日志</code></pre>
+</div>
+
+<div class="iface">
+<h4>P1-4 多屏裁决 <span class="badge b-sig">签名冻结</span><span class="badge b-l0">生产</span></h4>
+<pre><code>pub fn resolve_target_output(cursor: Option&lt;Pos&gt;, kbd_focus: Option&lt;OutputId&gt;,
+                             enumerated: &amp;[OutputId]) -&gt; OutputId;
+// 三级回退：指针活跃屏 → 键盘焦点屏 → 首个有效输出（§6.2）</code></pre>
+</div>
+
+<div class="iface">
+<h4>P1-5 Popup Clamp &amp; Flip <span class="badge b-sig">签名冻结</span><span class="badge b-l0">生产</span></h4>
+<pre><code>pub fn clamp_flip(anchor: Rect, canvas: (u32,u32), screen: Rect, margin: u32) -&gt; Placed;
+// 仅吸附形态（anchor_rect 存在）经此路；自由形态不经此函数。
+// 纯函数 → 穷举边界单测，复现成本为零。</code></pre>
+</div>
+
+<div class="iface">
+<h4>P1-6 wl_shm 免驱提交链路 SwapChain <span class="badge b-sig">签名冻结</span><span class="badge b-l0">生产</span></h4>
+<pre><code>pub trait SwapChain {
+    fn alloc(&amp;mut self, w_px: u32, h_px: u32) -&gt; BufferHandle; // nix memfd_create
+    fn frame(&amp;mut self) -&gt; &amp;mut tiny_skia::Pixmap;
+    fn submit(&amp;mut self, damage: Option&lt;Rect&gt;); // damage_buffer + 逻辑×scale 物理换算
+}
+// wgpu 加速后备 = Feature 门控位（§15.1/§18.1-4）：驱动缺失自动回落 CPU 管线
+// 并经 Warning 事件出环（Phase 3/4），绝不崩溃。wgpu 类型被本 trait 遮蔽。</code></pre>
+</div>
+
+<div class="iface">
+<h4>P1-7 探路原子 fill <span class="badge b-sig">签名冻结</span><span class="badge b-l0">生产</span></h4>
+<pre><code>pub struct FillNode;  // 纯色；Phase 1 唯一可渲染内容
+impl AtomNode for FillNode { /* 根契约三方法 */ }</code></pre>
+</div>
+
+<div class="iface">
+<h4>P1-8 原子根契约 <span class="badge b-con">宪法冻结</span><span class="badge b-l0">生产</span></h4>
+<pre><code>pub trait AtomNode: Send + Sync {
+    fn atom_type(&amp;self) -&gt; &amp;'static str;
+    fn id(&amp;self) -&gt; Option&lt;&amp;str&gt;;
+    fn hit_test(&amp;self, logical_x: i32, logical_y: i32) -&gt; bool;
+}
+// 单文件物理隔离（§7）：interpop-atoms/src/&lt;atom&gt;.rs；容器层统一 Box&lt;dyn AtomNode&gt;
+// 多态分发，⛔ 禁止巨型 match 硬编码适配具体原子类型。</code></pre>
+</div>
+
+<p class="note"><b>Phase 1 退出断言 ↔ 接口</b>：视口精准呈现（P1-1+P1-6，golden 纯色截屏）；exclusive_zone 避让（P1-2）；Popup 翻转无误（P1-5 穷举单测）；Mutter 拒绝制（P1-3 宿主注入）。</p>
+
+<!-- ======================= 第5章 ======================= -->
+<h2 id="ch5">第5章 · Phase 2 · 附血肉与通触觉（P2-1 ~ P2-10）</h2>
+<p class="note">切面目标（§16）：Taffy + cosmic-text + <b>16+1 满编原子</b> + 交互租约锁。ConnId 由 scaffold 模拟（含模拟 EOF），租约接口从第一天带 ConnId。<b>交付排序</b>（台账#3）：按 §8.3 梯队 P0 七原子先行闭环 → P1 五原子 → P2 低频四原子；tray 以"幽灵图元 + atom_fallback 降级路径"形态交付。<b>拒绝缩围</b>：§16 门禁 + §8.3 原子职责定义（input 无 ImeAnchor、list 无 VirtualList 即空壳）。</p>
+
+<div class="iface">
+<h4>P2-1 能力 SPI <span class="badge b-con">宪法冻结</span><span class="badge b-l0">生产</span></h4>
+<pre><code>pub trait LayoutNode     { fn layout_style(&amp;self) -&gt; &amp;taffy::Style; }  // 词汇表例外(1.4)
+pub trait InteractiveNode{ fn handle_pointer(&amp;mut self, ev: &amp;SpatialPointer)
+                                        -&gt; Option&lt;IntentAction&gt;; }
+pub trait ReactiveNode   { fn apply_patch(&amp;mut self, p: &amp;PatchPayload)
+                                        -&gt; Result&lt;bool, Error&gt;; }</code></pre>
+</div>
+
+<div class="iface">
+<h4>P2-2 布局引擎 + Taffy Panic 三级熔断 <span class="badge b-sig">签名冻结</span><span class="badge b-l0">双用</span></h4>
+<pre><code>pub struct LayoutEngine;
+impl LayoutEngine {
+    pub fn full_layout(&amp;mut self, tree: &amp;mut AtomForest);   // 断言全树 ≤50μs
+    pub fn subtree_layout(&amp;mut self, id: AtomId);           // 断言子树 ≤15μs（自适应型）
+}
+pub struct TaffyPanicFuse;  // ①Panic 丢弃整树 50μs 重分配 ②故障原子 display:none
+                            // ③连续三次失败冻结上一好帧，主循环永不崩溃
+// ⛔ Taffy 布局严禁出环（§11.1 宪法）：WorkerJob 无对应变体即机器体现。
+// 诊断档：熔断三级计数器；panic 注入钩子仅 test 构建。</code></pre>
+</div>
+
+<div class="iface">
+<h4>P2-3 文字成形 TextShaper <span class="badge b-sig">签名冻结</span><span class="badge b-l0">生产</span></h4>
+<pre><code>pub struct TextShaper;
+impl TextShaper { pub fn shape(&amp;self, run: &amp;TextRun, max_w: u32) -&gt; ShapedText; }
+// cosmic-text 多语言成形 + 自动折行 + 安全末尾截断；
+// 冷启动 fontdb 全盘扫描走 P3-9 WorkerJob::FontScan。</code></pre>
+</div>
+
+<div class="iface">
+<h4>P2-4 原子注册表 AtomRegistry <span class="badge b-sig">签名冻结</span><span class="badge b-l0">双用</span></h4>
+<pre><code>impl AtomRegistry {
+    pub fn create(&amp;self, spec: &amp;AtomSpec, feats: &amp;FeatureSet)
+        -&gt; Result&lt;Box&lt;dyn AtomNode&gt;, FallbackReason&gt;;
+}   // 未开 feature → 0 尺寸幽灵图元 + 异步 atom_fallback（§8.3 降级契约）</code></pre>
+</div>
+
+<div class="iface">
+<h4>P2-5 DSL 宏展开器 DslExpander <span class="badge b-sig">签名冻结</span><span class="badge b-l0">生产</span></h4>
+<pre><code>impl DslExpander { pub fn expand(spec: &amp;AtomSpec) -&gt; AtomForest; }
+// 复合组件（badge/chip/session_tile）仅存在于本层，产物只含基元；
+// ⛔ 严禁为其在 interpop-atoms/src/ 下新建原子文件（§9 守卫/§18.1-2）。
+// 诊断档：DSL 展开前后原子树 dump（文件档）。</code></pre>
+</div>
+
+<div class="iface">
+<h4>P2-6 交互租约锁 LeaseLock <span class="badge b-sig">签名冻结</span><span class="badge b-l0">双用</span></h4>
+<pre><code>impl LeaseLock {
+    pub fn acquire(&amp;mut self, conn: ConnId, lease_id: LeaseId) -&gt; bool;
+    pub fn guard(&amp;self, lease_id: LeaseId, patch: &amp;PatchRequest) -&gt; bool; // 拦过期旧快照
+    pub fn release_conn(&amp;mut self, conn: ConnId);      // EOF 铁律：全量强制释放
+    pub fn evict_target(&amp;mut self, conn: ConnId, t: &amp;TargetId); // 由 P1-9 漏斗调用
+}</code></pre>
+<ul class="note">
+<li><b>依据</b>：§8.2 + §5.2（租约存活期强制绑定客户端连接）。</li>
+<li><b>附注</b>（台账#1 裁决修正）：熔断落点 = P1-9 漏斗的 BeginDismiss / ForceTakeover 两分支内联调用 <code>evict_target</code>，<b>非</b> begin_dismiss 签名参数。威胁模型修正：Rebind 从未被租约阻塞（EOF 铁律先清租约）；真实受害路径 = ①同连接重生（画布已 dismiss、连接存活、僵尸租约截止新 patch → 滑块冻结）②force 抢管（SIGSTOP 场景）。单 Calloop 主环下<b>死锁结构上不可能</b>（封禁#5 红利），残留风险是状态陈滞，由 §12.3 墓碑+快照幂等兜底。诊断档：租约表 dump + 孤儿租约检测计数。</li>
+</ul>
+</div>
+
+<div class="iface">
+<h4>P2-7 输入归一化与仲裁 <span class="badge b-sig">签名冻结</span><span class="badge b-l0">生产</span></h4>
+<pre><code>pub struct SpatialPointer;                  // wl_pointer+wl_touch 折叠，逻辑像素域
+pub const TOUCH_TOLERANCE_BASE: f64 = 8.0;  // 8 × scale_factor 包围盒容差
+pub struct KeyboardRouter;  // xkbcommon 修饰掩码；Return/Enter→IntentAction 包装；
+                            // panel/overlay 无焦点视口 100% 穿透
+pub struct EscapeArbiter;   // 被动免疫：input 编辑态仅清 IME；manual/window 严禁销毁
+                            // 主动清退：spotlight 模态 / 瞬态策略视口未捕获→自决 dismiss</code></pre>
+</div>
+
+<div class="iface">
+<h4>P2-8 销毁策略机 DismissArbiter <span class="badge b-sig">签名冻结</span><span class="badge b-l0">生产</span></h4>
+<pre><code>impl DismissArbiter {
+    pub fn evaluate(&amp;mut self, ev: &amp;InputEvent, ctx: &amp;CanvasCtx)
+        -&gt; Option&lt;DismissReason&gt;;   // 仅产生触发建议，写入一律经 P1-9 漏斗
+}   // click_outside 空间判定 / timeout 交互驻留冻结 / on_blur 租约保护期与白名单
+    // 内核只执行策略机，不感知业务语义（§6.4 合宪性注记）</code></pre>
+</div>
+
+<div class="iface">
+<h4>P2-9 几何不变型快路径 <span class="badge b-sig">签名冻结</span><span class="badge b-l0">生产</span> <span class="badge b-test">双用(纯函数)</span></h4>
+<pre><code>pub trait DirectPaint { fn paint_partial(&amp;mut self, px: &amp;mut Pixmap, v: &amp;PatchPayload); }
+pub struct DampedFollower { value: f64, lambda: f64 }   // Critical Damped EMA（§11.2）
+impl DampedFollower {
+    pub fn step(&amp;mut self, target: f64, dt: f64) -&gt; f64; // 因子夹取 [0.0, 1.0)
+    pub fn snap(&amp;mut self, target: f64);                 // 外部显式 snap:true 直达
+}
+// ⛔ 不提供 lerp —— §0 封禁#4 以"接口缺席"体现（终审依据：§0 表）。</code></pre>
+</div>
+
+<div class="iface">
+<h4>P2-10 特化原子能力接口 <span class="badge b-sig">签名冻结</span><span class="badge b-l0">生产</span></h4>
+<pre><code>pub trait ImeAnchor  { fn cursor_rect_global(&amp;self) -&gt; Rect; }   // input→IME 候选框对齐
+pub trait VirtualList{ fn visible_window(&amp;self, vp: Rect) -&gt; RowRange;
+                       fn recycle(&amp;mut self, off: RowRange); }   // list 仅渲染可见行
+// 附注（台账#2 关联）：VirtualList 是防脏表耗竭的<b>内置防线</b>——虚拟化让原子总数
+// 与数据规模解耦。CI 断言"活跃原子总数 ≤ 4096 水位"倒逼场景遵守此契约（G10）。</code></pre>
+</div>
+
+<p class="note"><b>Phase 2 退出断言 ↔ 接口</b>：画布由原子反向撑开（P2-2→P1-1）；拖拽租约生效无抽搐（P2-6+P2-9，60Hz 直注过期快照断言渲染值单调）；租约绑定连接 EOF 自动释放（P2-6.release_conn，scaffold 模拟 EOF）。</p>
+
+<!-- ======================= 第6章 ======================= -->
+<h2 id="ch6">第6章 · Phase 3 · 通神经与立中枢（P3-1 ~ P3-12）</h2>
+<p class="note">切面目标（§16）：Calloop 单循环 + UDS 大动脉；BytesMut 分帧 + P0/P1 双通道；打通 PING/spawn/dismiss。<b>交付动作：scaffold 物理删除（§15.3）</b>。patch/restyle 结构位本阶段就位（契约已冻结），语义闭合归 Phase 4。</p>
+
+<div class="iface">
+<h4>P3-1 运行时目录四级降级 <span class="badge b-sig">签名冻结</span><span class="badge b-l0">双用</span></h4>
+<pre><code>pub fn resolve_runtime_dir() -&gt; PathBuf;
+// XDG_RUNTIME_DIR → /run/user/&lt;UID&gt; → XDG_CACHE_HOME/interpop/run
+// → /tmp/interpop-run-&lt;UID&gt;-&lt;BLAKE3(UID||boot_id||uuid)&gt;（O_EXCL 加固沙盒 §5.3）</code></pre>
+</div>
+
+<div class="iface">
+<h4>P3-2 UDS 服务器与鉴权 <span class="badge b-sig">签名冻结</span><span class="badge b-l0">生产</span></h4>
+<pre><code>impl IpcServer {
+    pub fn bind(rt: &amp;Path) -&gt; io::Result&lt;Self&gt;;  // ECONNREFUSED→unlink() 残留重绑
+    pub fn peer_uid(&amp;self, conn: &amp;Conn) -&gt; u32;  // SO_PEERCRED 属主强校验
+}</code></pre>
+</div>
+
+<div class="iface">
+<h4>P3-3 流式分帧 FrameDecoder <span class="badge b-sig">签名冻结</span><span class="badge b-l0">双用</span></h4>
+<pre><code>impl FrameDecoder {
+    pub fn feed(&amp;mut self, chunk: &amp;[u8]) -&gt; Result&lt;Vec&lt;Request&gt;, FramingError&gt;;
+}   // BytesMut 累加；64KB 单行断路器；反序列化断言 ≤5μs；serde 产出 L0 同构 Request</code></pre>
+</div>
+
+<div class="iface">
+<h4>P3-4 P0/P1 双通道 <span class="badge b-con">宪法冻结(容量)</span><span class="badge b-l0">双用</span></h4>
+<pre><code>pub struct P0Channel;   // rtrb 64 slots 锁死；spawn/dismiss/restyle 专用；绝对阻塞保底
+pub struct P1DirtyTable;// AtomPatchMap 4096 条目锁死，零动态扩容，Latest-Wins
+impl P1DirtyTable {
+    pub fn admit(&amp;mut self, patch: PatchRequest) -&gt; AdmitVerdict; // 签名本阶段冻结
+}
+// 告警走 P0、数据走 P1：P1 饱和时 backpressure_warning 仍经 P0 可达。
+// 诊断档：水位 gauge；统计文件（文件档，schema_version 自由）。</code></pre>
+</div>
+
+<div class="iface">
+<h4>P3-5 动词分发器 VerbDispatcher <span class="badge b-sig">签名冻结</span><span class="badge b-l0">生产</span></h4>
+<pre><code>impl VerbDispatcher {
+    pub fn dispatch(&amp;mut self, conn: &amp;mut Conn, req: Request) -&gt; DispatchFlow;
+}   // PING→同连接 PONG；spawn/dismiss→P0；patch→P1；restyle→广播（语义 P4 验收）
+    // 未知动词→error{reason:protocol_restricted}（台账#6）</code></pre>
+</div>
+
+<div class="iface">
+<h4>P3-6 属主表与 Rebind OwnershipTable <span class="badge b-sig">签名冻结</span><span class="badge b-l0">生产</span></h4>
+<pre><code>impl OwnershipTable {
+    pub fn check(&amp;self, t: &amp;TargetId, c: ConnId) -&gt; Result&lt;(), ErrorReason&gt;; // target_owned
+    pub fn rebind(&amp;mut self, t: &amp;TargetId, c: ConnId, force: bool) -&gt; RebindDecision;
+    pub fn on_eof(&amp;mut self, c: ConnId);  // 强制释放该连接全部租约→清退视口（不待松手事件）
+}
+// 附注（台账#15 事实修正）：多会话免疫来自 §5.2 socket 天然隔离（独立
+// $XDG_RUNTIME_DIR），与 CanvasCtx.conn_owned 无关——后者治理同会话跨连接越权。</code></pre>
+</div>
+
+<div class="iface">
+<h4>P3-7 Calloop 统合与 0Hz 休眠 <span class="badge b-con">宪法冻结(白名单)</span><span class="badge b-l0">生产</span></h4>
+<pre><code>impl EventLoop {
+    pub fn register_uds(&amp;mut self, IpcServer);
+    pub fn register_wayland(&amp;mut self, WaylandCx);
+    pub fn register_signals(&amp;mut self, SigSet);  // SIGTERM/SIGINT→五步析构
+    pub fn run(&amp;mut self, sd: ShutdownToken);    // 无帧回调即深度挂起（0Hz）
+}</code></pre>
+</div>
+
+<div class="iface">
+<h4>P3-8 宿主生命周期 <span class="badge b-sig">签名冻结</span><span class="badge b-l0">双用</span></h4>
+<pre><code>pub fn probe_pid1() -&gt; HostKind;   // 无特权读 /proc/1/comm
+pub fn five_step_shutdown();       // 杀借核子进程→阻断 IPC→卸表面→释放SHM→抹Socket
+                                   // ≤20ms；诊断档：五步耗时分解（预算分步审计）</code></pre>
+</div>
+
+<div class="iface">
+<h4>P3-9 后台 worker 白名单通道 <span class="badge b-con">宪法冻结</span><span class="badge b-l0">双用</span></h4>
+<pre><code>pub enum WorkerJob { FontScan,                       // 冷启动 fontdb 全盘扫描
+                     DecodeImage(AtomId, ImageBlob), // image crate PNG/JPEG 解码
+                     RasterGlyphMiss(AtomId, GlyphKey) } // cosmic-text 字形缓存 miss
+// 回传：rtrb SPSC → 主环。⛔ 枚举即白名单：Taffy 布局无对应变体 = 严禁出环；
+// 任何扩充必须附 Criterion 基准数据走 §18（含"生产版全量记录器"若将来立项）。</code></pre>
+</div>
+
+<div class="iface">
+<h4>P3-10 scaffold 物理删除（Zero-Trace Purge） <span class="badge b-ban">禁止立项(残留)</span></h4>
+<pre><code>// 非代码接口，退出动作（§15.3）：
+// ① rm 物理删除脚手架文件 ② 清空 pub mod scaffold_ext; 挂载声明
+// ③ Cargo.toml 清退全部专属 Feature 标签
+// 判定：发布版二进制脚手架残留率 = 绝对 0.00%（CI G1/G2 强制执行）</code></pre>
+</div>
+
+<div class="iface">
+<h4>P3-11 探针 CLI（probe） <span class="badge b-diag">诊断档</span></h4>
+<pre><code>// interpopd --probe：打印探测到的合成器种类、可用协议扩展、
+// runtime 目录解析档位、Mutter 仲裁裁决 —— 供"spawn 后无窗口"现场复跑破案。</code></pre>
+</div>
+
+<div class="iface">
+<h4>P3-12 panic 钩子与黑匣子 <span class="badge b-diag">诊断档</span></h4>
+<pre><code>// panic 钩子落盘 + 黑匣子强制 flush（见 P4-9 环形缓冲）至 runtime-dir；
+// 生产黑匣子 = 仅此一项 + 既设 gpu-leak-audit.log（§13.4）。
+// ⛔ 不引入后台日志线程（§11.1 白名单纪律）。</code></pre>
+</div>
+
+<p class="note"><b>Phase 3 退出断言 ↔ 接口</b>：单行 JSON ≤5μs（P3-3，Criterion）；外部灌入指令毫秒级拉起视图（P3-5 全链路 headless-smoke）；scaffold 归零（P3-10，CI G1/G2）。</p>
+
+<!-- ======================= 第7章 ======================= -->
+<h2 id="ch7">第7章 · Phase 4 · 闭回环与生产封板（P4-1 ~ P4-11）</h2>
+<p class="note">切面目标（§16）：patch 防倒流与 intent 回写闭合；wl_subsurface；机器门禁部署。全部语义在既有签名上<b>闭合行为而非改接口</b>。</p>
+
+<div class="iface">
+<h4>P4-1 patch 墓碑栅栏闭合 <span class="badge b-sig">签名冻结</span><span class="badge b-l0">生产</span></h4>
+<pre><code>impl P1DirtyTable {
+    pub fn admit_closed(&amp;mut self, p: PatchRequest) -&gt; AdmitVerdict;
+    // tombstone_us 早于 p.timestamp → 校验前静默丢弃（封死状态倒流空洞）
+    // 绝对快照幂等 → 丢弃中间值仅延迟收敛，不污染终态
+    pub fn overflow_event(&amp;self, id: AtomId) -&gt; Event; // backpressure_warning 富化载荷
+    pub fn flush_on_vblank(&amp;mut self) -&gt; Vec&lt;AppliedPatch&gt;; // VBlank 对齐消费脏表
+}</code></pre>
+</div>
+
+<div class="iface">
+<h4>P4-11 admit 遥测与水位文件 <span class="badge b-diag">诊断档</span></h4>
+<pre><code>// admit 判定三元计数（接受/墓碑丢弃/溢出丢弃）+ 脏表水位统计
+// → $XDG_RUNTIME_DIR/interpop/dirtytable-stats.json（带 schema_version，自由演进）
+// 替代"warning 加 usage 字段"的出线方案（台账#5）。</code></pre>
+</div>
+
+<div class="iface">
+<h4>P4-2 intent 回写大动脉 <span class="badge b-sig">签名冻结</span><span class="badge b-l0">生产</span></h4>
+<pre><code>impl IntentWriter { pub fn bubble(&amp;self, o: (ConnId,TargetId,AtomId), a: IntentAction); }
+// 同源连接双向反写；尽力而为语义：EPIPE 立即丢弃，绝不阻塞析构（§14.2）。</code></pre>
+</div>
+
+<div class="iface">
+<h4>P4-3 心跳与竞态作废 HeartbeatMonitor <span class="badge b-sig">签名冻结</span><span class="badge b-l0">生产</span></h4>
+<pre><code>impl HeartbeatMonitor {
+    pub fn arm(&amp;mut self, t: TargetId, ms: u32);
+    pub fn beat(&amp;mut self, t: TargetId);
+    pub fn disarm(&amp;mut self, t: TargetId);
+}   // 150ms 离场期内同名 spawn → 原子化作废旧销毁任务
+    // → 调用 P1-1 revive_in_place + reset_anim_clock（§12.5 Disarming）</code></pre>
+</div>
+
+<div class="iface">
+<h4>P4-4 wl_subsurface 借核 <span class="badge b-sig">签名冻结</span><span class="badge b-l0">生产</span></h4>
+<pre><code>impl SubsurfaceHost {
+    pub fn mount(&amp;mut self, slot: &amp;SurfaceSpec, ext: ExternalClient)
+        -&gt; Result&lt;SubId, ErrorReason&gt;;   // §0 封禁#6 的法定替代路径
+    pub fn on_child_death(&amp;mut self, pid: pid_t); // PR_SET_PDEATHSIG + 1 VBlank 内注销
+}</code></pre>
+</div>
+
+<div class="iface">
+<h4>P4-5 显存/FD 引用计数审计 <span class="badge b-sig">签名冻结</span><span class="badge b-l0">双用</span></h4>
+<pre><code>impl RefAuditor { pub fn assert_zero_leaks(&amp;self) -&gt; bool; } // gpu-leak-audit.log: ACTIVE_LEAKS: 0</code></pre>
+</div>
+
+<div class="iface">
+<h4>P4-6 restyle 热重载闭合 <span class="badge b-sig">签名冻结</span><span class="badge b-l0">生产</span></h4>
+<pre><code>impl RestyleEngine { pub fn broadcast(&amp;mut self, tokens: &amp;TokenMap) -&gt; Duration; } // 微秒级换肤</code></pre>
+</div>
+
+<div class="iface">
+<h4>P4-7 渲染死线熔断 <span class="badge b-sig">签名冻结</span><span class="badge b-l0">生产</span></h4>
+<pre><code>pub fn render_deadline_guard() -&gt; Result&lt;(), ErrorReason&gt;; // RenderPipelineTimeout</code></pre>
+</div>
+
+<div class="iface">
+<h4>P4-8 CI 断言入口 CiHarness + 加固版字形沙箱 <span class="badge b-test">测试专用</span></h4>
+<pre><code>// interpop-render 内 #[cfg(test)] / dev-dependency 专属模块（台账#2 加固③：
+// 测试脚手架混入生产 crate 正是 §15.3 要杀死的形态）
+pub struct CiTextSandbox { pub font_system: FontSystem }
+impl CiTextSandbox {
+    pub fn new_isolated() -&gt; Self {
+        let mut db = Database::new();            // 源码核验：空库，不扫系统字体
+        assert!(db.is_empty(),                   // 加固①：fontdb 语义漂移即 CI 首帧爆红
+            "sandbox integrity: fontdb semantics drifted");
+        let embedded: &amp;'static [u8] =
+            include_bytes!("../../tests/assets/ci_lock_font.ttf");
+        let faces = db.load_font_data(embedded.to_vec());
+        assert_eq!(faces.len(), EXPECTED_FACE_COUNT, "font asset drifted"); // 加固①
+        let fs = FontSystem::new_with_locale_and_db("zh-CN".into(), db);
+        CiTextSandbox { font_system: fs }
+    }
+}
+impl CiHarness {
+    pub fn headless_smoke(rt: &amp;Path) -&gt; Result&lt;(), CiError&gt;;
+    pub fn soak_a() -&gt; RssReport;        // 空载 60s：VmRSS 漂移 ≤512KB，基线 ≤25MB
+    pub fn soak_b(rate_hz: u32) -&gt; RssReport; // 60Hz patch 灌注：漂移 ≤512KB
+    pub fn golden_hash(case: &amp;str) -&gt; Blk3;
+    // 加固②：哈希三元完整性 —— hash(输入像素, 包埋字体集, tiny-skia 版本常量)
+    // 同管线 BLAKE3 全等 / 跨 GPU ΔE&lt;2；锁输入域：内置字形资产 + 锁死 tiny-skia（§17.1）
+}</code></pre>
+<ul class="note"><li><b>依据</b>：§17.1 门禁自杀防线 —— 本沙箱是宪法条文的第一性实现（台账#2：认定合规实现而非新优化），三处加固后采纳。</li></ul>
+</div>
+
+<div class="iface">
+<h4>P4-9 飞行记录器 <span class="badge b-gate">Feature门控</span><span class="badge b-test">测试专用(生产默认关)</span></h4>
+<pre><code>// feature = "flight-recorder"（dev/CI 启用）
+// 主环入口旁路 tap：每条 {t_monotonic_us, kind: Request|InputEvent|VBlank|Timer, payload}
+// → NDJSON 追加至 runtime-dir 环形缓冲（容量上界防爆破）
+// → panic 钩子 / 五步析构时强制 flush 落盘。
+// 确定性基础（§0#5 单环 + §12.3 CLOCK_MONOTONIC + 字形沙箱 + 纯函数追赶器）
+// ⇒ 全系统输入完全序确定，支持仪式化回放。</code></pre>
+</div>
+
+<div class="iface">
+<h4>P4-10 确定性回放器 ReplayHarness <span class="badge b-test">测试专用</span></h4>
+<pre><code>// 读转录 → 按 t 序重放 → 直注同构漏斗（VerbDispatcher / P1-9 transition()）
+// → 断言终态哈希 == 事发时快照哈希。
+// 回放器只依赖 L0 类型、不依赖 scaffold —— 同构铁律第二重价值：
+// 直注漏斗与 wire 漏斗共用同一入口，回放结论对生产有效。
+// 配套 CI（G9）：gold 转录集回放哈希比对 —— 任何破坏确定性的 PR
+//（未播种随机、HashMap 迭代序）直接红屏。</code></pre>
+</div>
+
+<p class="note"><b>Phase 4 退出断言 ↔ 接口</b>：无瑕疵跑通 5 大黑盒案卷（第8章）；双通道浸泡通过；彻底封板。</p>
+
+<!-- ======================= 第8章 ======================= -->
+<h2 id="ch8">第8章 · §17.4 五大黑盒案卷 ↔ 接口映射</h2>
+<table>
+<tr><th>#</th><th>案卷</th><th>依赖接口链</th></tr>
+<tr><td>①</td><td>Waybar 音量岛</td><td>L0 anchor_rect → P1-5 Clamp&amp;Flip → P2-6/P2-9 防抽搐对齐外部权威 → P4-3（EOF 释放租约 + Rebind/Disarming）</td></tr>
+<tr><td>②</td><td>快捷控制抽屉</td><td>P1-2 drawer → P2-4 grid → P4-2 intent 回写至 UDS</td></tr>
+<tr><td>③</td><td>背光防黑（合宪性验证）</td><td>L0 slider 声明 min:0.15 → 原子通用几何截断——内核零业务感知，仅刚性执行外部契约</td></tr>
+<tr><td>④</td><td>模态搜索视口</td><td>P1-2 spotlight → P2-10 ImeAnchor + VirtualList</td></tr>
+<tr><td>⑤</td><td>失焦即焚清退</td><td>P2-8 on_blur → P1-1/P1-9 双阶段离场 → P4-5 深度回收断言</td></tr>
+</table>
+
+<!-- ======================= 第9章 ======================= -->
+<h2 id="ch9">第9章 · 版本策略：三层模型与两端矩阵</h2>
+<h3>9.1 三层模型（锁定与兼容各司其职）</h3>
+<table>
+<tr><th>层</th><th>载体</th><th>语义</th><th>回答的诉求</th></tr>
+<tr><td>① 地板层</td><td>Cargo.toml 中 §15.1 版本号（caret：taffy="0.5" 即 ≥0.5,&lt;0.6）</td><td>兼容性下界：向下保证 Debian 13 可构建，向上自动吸收 semver 兼容新版（Cargo 默认解析行为即"最新可兼容"）</td><td>"版本号是基础"</td></tr>
+<tr><td>② 复现层</td><td>Cargo.lock（提交入库）</td><td>CI 断言的精确输入：golden hash、浸泡逐字节可复现</td><td>"锁定稳定版"</td></tr>
+<tr><td>③ 探针层</td><td>每周升级金丝雀作业</td><td>cargo update 全量过门禁 + 下一主版本破坏性预演（只报告不阻断）</td><td>"兼容新版"</td></tr>
+</table>
+<pre><code># .github/workflows/upgrade-canary.yml（随 Phase 3 CI 部署同轨，工程层）
+on: { schedule: [{cron: "0 3 * * 1"}] }
+jobs:
+  within-semver:            # ① 地板内漂移：新 patch 版是否破坏断言
+    steps: [cargo update, 全量CI门禁 + golden hash + 双通道浸泡]
+  next-major-probe:         # ② 破坏性预演：产出《下一主版本破损清单》
+    continue-on-error: true
+    steps: [cargo upgrade --incompatible, cargo check --workspace]
+    # 破损清单 = §18 修订门槛要求的"代码证据"半成品 → 升级从大爆炸改写为每周小剂预演</code></pre>
+
+<h3>9.2 波动性分级</h3>
+<table>
+<tr><th>波动级</th><th>成员</th><th>升级语义</th><th>策略</th></tr>
+<tr><td>稳定层</td><td>serde 1.0</td><td>1.0.x 永续兼容</td><td>零操作</td></tr>
+<tr><td>波动层(0.x)</td><td>taffy / cosmic-text / image / resvg / nix / wayland-* / calloop / xkbcommon / rtrb</td><td>0.x minor = 语义 breaking</td><td>Cargo.lock 复现 + 金丝雀探测；跨 minor 触发内部 semver 纪律（1.3-②）</td></tr>
+<tr><td>精确锁</td><td><b>tiny-skia</b></td><td>golden 三元函数的输入变量（§17.1）</td><td><b>唯一例外</b>：仅走 §18 附"跨小版本 hash 稳定"基准数据放行</td></tr>
+<tr><td>门控层</td><td>wgpu / zbus / accesskit</td><td>默认关闭</td><td>升级成本全场最低：门控测试单独验证，主线零波及</td></tr>
+</table>
+
+<h3>9.3 工具链两端矩阵</h3>
+<table>
+<tr><th>通道</th><th>工具链</th><th>断言</th><th>保证</th></tr>
+<tr><td>msrv-floor</td><td><b>1.86</b>（Debian 13 trixie 基准）</td><td>cargo check --workspace + test 全绿</td><td>最旧支持发行版永远可构建</td></tr>
+<tr><td>stable-latest</td><td>最新 stable</td><td>clippy -D warnings（含 deprecated 拒绝）+ test + golden hash</td><td>新工具链零回归；废弃 API 编译期被拒绝（"清退弃用标准"的机器化）</td></tr>
+</table>
+<p class="note"><b>供应链安全阀</b>：cargo-audit 扫描 RUSTSEC 公告<b>强制触发升级</b>——唯一允许跳过排期立即执行的升级类型（安全修复不等金丝雀周期）。</p>
+<blockquote>总恒等式：<b>版本号是地板，Cargo.lock 是复现，金丝雀是预警，两端矩阵是保证，§18 是放行程序，golden hash 是升级质量的裁判。</b></blockquote>
+
+<!-- ======================= 第10章 ======================= -->
+<h2 id="ch10">第10章 · 观测三档与接口定位审计总表</h2>
+<p class="note">审计结论：<b>全部接口均有归宿，零"身份不明"项</b>。生产/诊断双用项集中于有内部状态机的组件（漏斗/租约/脏表/属主表）——故障高发区，双用是应得的。</p>
+<table>
+<tr><th>ID</th><th>接口</th><th>冻结级</th><th>定位</th><th>调试工件 / 复现手段</th></tr>
+<tr><td>L0-1~5</td><td>全动词 + 7 事件</td><td>L0冻结</td><td>生产</td><td>PING 检活；error 四枚举；tombstone 对账；未知动词→protocol_restricted</td></tr>
+<tr><td>P1-1</td><td>状态机</td><td>签名冻结</td><td>生产+诊断</td><td>每次迁移 trace span（含 Trigger 来源）；状态快照 dump</td></tr>
+<tr><td>P1-9</td><td>单漏斗 transition()</td><td>签名冻结</td><td>双用</td><td>迁移金表测试；越权迁移类型层不可表示</td></tr>
+<tr><td>P1-2/4/5</td><td>LayerMapper / resolve_output / clamp_flip</td><td>签名冻结</td><td>生产</td><td>纯函数→属性测试与穷举单测，复现成本零</td></tr>
+<tr><td>P1-3</td><td>合成器仲裁</td><td>签名冻结</td><td>双用</td><td>裁决档位日志；P3-11 probe CLI 复用同一函数</td></tr>
+<tr><td>P1-6/7/8</td><td>SwapChain / fill / AtomNode</td><td>签名/宪法冻结</td><td>生产</td><td>damage 矩形 trace；hit_test 纯函数</td></tr>
+<tr><td>P2-2</td><td>布局引擎+熔断</td><td>签名冻结</td><td>双用</td><td>熔断三级计数；panic 注入钩子(test)</td></tr>
+<tr><td>P2-3</td><td>TextShaper</td><td>签名冻结</td><td>生产</td><td>沙箱字形锁定→逐字节可复现</td></tr>
+<tr><td>P2-4/5</td><td>Registry / DslExpander</td><td>签名冻结</td><td>双用</td><td>atom_fallback 计数；DSL 展开树 dump(文件档)</td></tr>
+<tr><td>P2-6</td><td>LeaseLock</td><td>签名冻结</td><td>双用</td><td>租约表 dump；孤儿租约检测计数</td></tr>
+<tr><td>P2-7/8</td><td>Escape / Dismiss 仲裁</td><td>签名冻结</td><td>生产</td><td>决策 trace（命中防线与 reason）</td></tr>
+<tr><td>P2-9</td><td>DampedFollower</td><td>签名冻结</td><td>双用</td><td>snap:true 即确定性模式；step 纯函数 property 测试</td></tr>
+<tr><td>P2-10</td><td>ImeAnchor / VirtualList</td><td>签名冻结</td><td>生产</td><td>光标矩形 trace；可见窗口 trace</td></tr>
+<tr><td>P3-1/2/3</td><td>runtime 目录 / UDS / 分帧</td><td>签名冻结</td><td>双用</td><td>降级档位 trace；64KB 断路器命中计数+超限测试</td></tr>
+<tr><td>P3-4</td><td>双通道</td><td>宪法冻结</td><td>双用</td><td>水位 gauge；溢出事件(出线)；统计文件(文件档)</td></tr>
+<tr><td>P3-5/6</td><td>Dispatcher / OwnershipTable</td><td>签名冻结</td><td>双用</td><td>动词分发 trace；属主表 dump；EOF 清退 trace</td></tr>
+<tr><td>P3-7/8</td><td>EventLoop / 生命周期</td><td>宪法/签名冻结</td><td>双用</td><td>析构五步耗时分解；panic 钩子</td></tr>
+<tr><td>P3-9</td><td>worker 白名单</td><td>宪法冻结</td><td>双用</td><td>队列深度 gauge；job 耗时 histogram</td></tr>
+<tr><td>P3-11</td><td>probe CLI</td><td>诊断档</td><td>诊断</td><td>现场环境自检一键复跑</td></tr>
+<tr><td>P3-12</td><td>panic 钩子黑匣子</td><td>诊断档</td><td>诊断</td><td>事后转录回放</td></tr>
+<tr><td>P4-1/11</td><td>墓碑栅栏 + 遥测</td><td>签名冻结/诊断档</td><td>双用</td><td>admit 三元计数；水位文件；backpressure 富化载荷</td></tr>
+<tr><td>P4-2/3</td><td>intent / Heartbeat</td><td>签名冻结</td><td>生产</td><td>EPIPE 丢弃计数；arm/beat/disarm trace</td></tr>
+<tr><td>P4-4~7</td><td>subsurface / 审计 / restyle / 死线</td><td>签名冻结</td><td>生产</td><td>gpu-leak-audit.log(既设)；restyle 耗时</td></tr>
+<tr><td>P4-8</td><td>CiHarness + 沙箱</td><td>测试专用</td><td>测试</td><td>本身即调试基建；#[cfg(test)]/dev-dep 隔离</td></tr>
+<tr><td>P4-9/10</td><td>飞行记录 / 回放器</td><td>Feature门控/测试专用</td><td>测试</td><td>确定性金转录 + 回放哈希比对</td></tr>
+</table>
+
+<!-- ======================= 第11章 ======================= -->
+<h2 id="ch11">第11章 · 运行时故障预演表（八剧本）</h2>
+<p class="note">定位：§18.1"审计偏差预演"的<b>运行时姊妹篇</b>——文档审计预演"哪里会被误判缺文档"，本表预演"哪里会出故障、故障时靠什么工件破案"。</p>
+<table>
+<tr><th>#</th><th>故障剧本</th><th>典型症状</th><th>破案工件</th><th>复现路径</th><th>覆盖状态</th></tr>
+<tr><td>1</td><td>拖拽期租约竞态</td><td>滑块抽搐/冻结</td><td>租约表 dump + 迁移 trace + patch 流回放</td><td>转录回放</td><td>已覆盖（P1-9 熔断已挂漏斗）</td></tr>
+<tr><td>2</td><td>"我发的 90% 哪儿去了"</td><td>patch 疑似丢失</td><td>backpressure 富化载荷 + admit 三元计数 + 水位文件</td><td>直接对账</td><td>已覆盖（§12.4 既设）</td></tr>
+<tr><td>3</td><td>spawn 后无窗口</td><td>静默无视图</td><td><b>P3-11 probe CLI</b></td><td>本地复跑 probe</td><td><b>工件新增</b></td></tr>
+<tr><td>4</td><td>RSS 慢涨</td><td>慢性泄漏</td><td>soak A/B + P4-5；dhat 堆剖析(test)</td><td>浸泡复跑</td><td>已覆盖</td></tr>
+<tr><td>5</td><td>离场残留/孤儿视口</td><td>幽灵表面</td><td>迁移 trace + Reclaimed 达标断言 + leak audit</td><td>回放 dismiss 序列</td><td>已覆盖</td></tr>
+<tr><td>6</td><td>客户端 SIGSTOP</td><td>视口僵死</td><td>force/heartbeat trace + 连接状态 dump</td><td>手工注入 SIGSTOP</td><td>已覆盖（§5.2 既设）</td></tr>
+<tr><td>7</td><td>崩溃无痕迹</td><td>进程蒸发</td><td><b>P3-12 panic 钩子 + 黑匣子 flush</b> + 五步析构耗时分解</td><td>事后读转录回放</td><td><b>工件新增</b></td></tr>
+<tr><td>8</td><td>跨机渲染不一致</td><td>golden 假红/真红</td><td>沙箱自检断言（字体集+光栅化器版本入哈希）</td><td>CI 内即复现</td><td>已覆盖（P4-8 加固版）</td></tr>
+</table>
+<p class="note">两个新增工件的共同点：<b>文件档/测试档——零出线、零白皮书修订、零白名单扩充</b>。</p>
+
+<!-- ======================= 第12章 ======================= -->
+<h2 id="ch12">第12章 · 裁决台账（append-only）</h2>
+<table>
+<tr><th>#</th><th>议题</th><th>裁决</th><th>落点</th></tr>
+<tr><td>1</td><td>优化一：离场熔断租约</td><td>行为采纳（画布死亡成为租约释放触发）；签名驳回（begin_dismiss 不持 LeaseLock 参数）；威胁模型修正（受害路径=同连接重生+force 抢管；Rebind 从未被阻塞；单环下死锁不可能）</td><td>P1-9 漏斗 BeginDismiss/ForceTakeover 分支内联 evict_target；P2-6 注记</td></tr>
+<tr><td>2</td><td>优化二：CI 字形沙箱</td><td>认定合规实现（§17.1① 第一性实现，非新优化）；三处加固采纳（is_empty/face_count 断言、哈希三元完整、模块隔离）</td><td>P4-8 加固版</td></tr>
+<tr><td>3</td><td>P2-10 推迟 Phase 3</td><td><b>驳回</b>（§16 Phase 2 门禁 + §8.3 原子职责定义，缩围即空壳）；合宪让步 = 阶段内按梯队排序 + tray 走降级路径</td><td>第5章交付排序注记</td></tr>
+<tr><td>4</td><td>CI 原子数水位断言</td><td>采纳</td><td>CI G10</td></tr>
+<tr><td>5</td><td>warning 加 usage 字段</td><td><b>驳回</b>（§12.4 Schema 冻结/§14.2/§18.1-3）；可观测走文件档；坚持则走 §18</td><td>P4-11</td></tr>
+<tr><td>6</td><td>protocol_version 字段</td><td><b>驳回默认添加</b>；版本化四证据（commit 历史+修订门槛+同轨门禁+Option 前向容忍）；未知动词→protocol_restricted 映射；serde 不启用 deny_unknown_fields</td><td>L0-1 注记；P3-5</td></tr>
+<tr><td>7</td><td>状态机职责边界图</td><td>采纳为<b>代码化单漏斗</b>（§12.5→§6.3 权威回指已存在，补新图属文书增补会被拒）；配置迁移穷举金表测试</td><td>P1-9；G9 伴生</td></tr>
+<tr><td>8</td><td>ErrorReason 开放变体</td><td><b>驳回</b>（§18.1-5 防漂移）；规则"过线即契约，不过线即实现"</td><td>L0-4 注记</td></tr>
+<tr><td>9</td><td>MSRV 基准</td><td>采纳：rust-version=1.86 + edition 2024 + Debian 13 trixie 基准注记；clippy -D deprecated</td><td>1.3-①；CI G6/G7</td></tr>
+<tr><td>10</td><td>内部 semver 纪律</td><td>采纳：0.x minor=breaking，跨 crate 显式升版</td><td>1.3-②</td></tr>
+<tr><td>11</td><td>借鉴过滤器</td><td>采纳：许可证/架构符合性/基准达标三判据 + 借鉴性映射</td><td>1.5</td></tr>
+<tr><td>12</td><td>版本锁误解澄清</td><td>三层模型（地板/复现/金丝雀）；tiny-skia 为唯一精确锁（golden 数学前提），解锁须 §18 附跨版本 hash 稳定数据</td><td>第9章</td></tr>
+<tr><td>13</td><td>飞行记录器 + 确定性回放</td><td>采纳为 feature 门控 dev/CI；生产黑匣子=panic 钩子+既设审计日志；生产版全量记录器若立项→§18 白名单第4项附 Criterion 数据</td><td>P4-9/P4-10</td></tr>
+<tr><td>14</td><td>确定性审计入 CI</td><td>采纳：gold 转录集回放哈希比对</td><td>CI G9</td></tr>
+<tr><td>15</td><td>事实修正两则</td><td>① fontdb Database::new 经源码核验为空库不扫系统（优化二代码此处正确）；② 多会话免疫来自 socket 隔离，非 CanvasCtx.conn_owned</td><td>P4-8 注记；P3-6 注记</td></tr>
+<tr><td>16</td><td>评审总评修正</td><td>评审"商榷均属优化建议而非架构缺陷"定性不成立：第1/3/5条照单全收将击穿 §16 门禁与 §18.1-5 宪法；评审真实价值=逼出三处契约空位（租约画布死亡释放缺口/未知动词处置缺口/水位×虚拟化联动），均已合宪闭合</td><td>本台账全表</td></tr>
+<tr><td>17</td><td>Debian 13 (trixie) 构建基线实证</td><td>rustc 1.86 实证;wayland 0.31 默认纯 Rust 后端实证;回滚安全推论:release profile 保持 panic=unwind,catch_unwind 熔断链路可达</td><td>1.3-①;SOP-P1 1.2 profile 注释;G13</td></tr>
+<tr><td>18</td><td>D5 首版丢弃</td><td>触发器(Phase 1 末)未满足即生成全文=文书空转,用户裁决否决;抢救四项:panic=unwind 红线→SOP-P1 1.2 / G13 打包断言→第14章 G 表 / 本行 / D5 骨架留存 D-Gov 第2/8章待触发重生</td><td>SOP-P1 1.2;第14章 G13;D-Gov 第8章</td></tr>
+<tr><td>19</td><td>外部评审 R1~R5 采纳</td><td>R1 事件矩阵扩围 / R2 tick 阈值制(近零休眠 ≤2 tick/5s,禁字面零) / R3 phys_px 唯一换算入口 / R4 FakeHost 测试域硬隔离 / R5 manifest 化证据校验,全部焊入 SOP-P1 v1.1-final</td><td>SOP-P1 附录C.1;各 PR 卡</td></tr>
+<tr><td>20</td><td>F1~F4 契约与白皮书终审对齐</td><td>根据最高权威白皮书终审裁决：<br>
+① <b>F1</b>: §8.3 17项标准基元 + §16 Phase 1 探路原子 fill 共 18 变体落地 AtomSpec，消除与 SOP-P1 原文断层；<br>
+② <b>F2</b>: 依据 §12.3 绝对快照铁律彻底剔除 PatchPayload::Raw 后门变体；<br>
+③ <b>F3</b>: 依据 §14.2 封闭下行事件，剔除 BufferStarvation 与 UnsupportedOnHost 未登记变体；<br>
+④ <b>F4</b>: 锁定 Event snake_case 派生 + Pong 大写特化，Option 统一 default 宽容策略。</td><td>第3章 L0 契约；第9章</td></tr>
+<tr><td>21</td><td>CanvasEvent 冻结形态对齐 + §7 签名张力裁定</td><td>① GuardTimeout 补入 P1-9(陷阱5.3 法定载体,§6.3 拓扑零变更),SOP PR-02 卡事件形态对齐 IF-BP:Dismiss(DismissTrigger)/AnimFinished/SurfaceDestroyed/RebindSpawn 均为无载荷变体,target/CanvasId 由 KernelShell 逐画布分发上下文提供,Effect 携带数据;② 白皮书 §7 ReactiveNode(&PatchPayload)与 §2/§12.3 绝对快照铁律的内部张力:按更具体条款 §12.3 与台账#20-F2 执行 apply_patch(&PatchPayload),§7 原文不修订(白皮书一字不改)</td><td>P1-9;SOP-P1 PR-02;P2-1</td></tr>
+<tr>
+  <td>22</td>
+  <td>P1-9 签名纯粹性、占位语义边界与 EmitDismissed 不对称裁定</td>
+  <td>
+    ① <b>签名纯粹性</b>：<code>transition()</code> 保持公开，<code>transition_with_context()</code> 严格收口为 <code>pub(crate)</code>，上下文注入由 KernelShell 承担；<br>
+    ② <b>占位 ID 契约</b>：公开纯函数产出的 Effect 携带占位 ID（0 / ""），由金表测试显式断言；<br>
+    ③ <b>离场事件不对称</b>：<code>AnimFinished</code>（自然离场完成）出环 <code>EmitDismissed</code>；<code>SurfaceDestroyed</code>（物理异常断裂）不出环；<br>
+    ④ <b>构造器密封</b>：<code>CanvasState</code> 采用 Newtype 封装，内部变体 <code>pub(crate)</code>，外部仅能通过常量比对，物理兑现退出断言。
+  </td>
+  <td>P1-9 单漏斗；SOP-P1 PR-02 卡退出断言；migration_gold.rs</td>
+</tr>
+</table>
+
+<!-- ======================= 第13章 ======================= -->
+<h2 id="ch13">第13章 · 变更控制与扩展决策树</h2>
+<h3>13.1 三级分流（同白皮书 §18.1）</h3>
+<table>
+<tr><th>情形</th><th>处置</th></tr>
+<tr><td>代码与条款不符</td><td><b>改代码</b>，文档一字不动</td></tr>
+<tr><td>纯笔误/交叉引用断链（无语义变更）</td><td>最小 diff 修补，随 commit 说明留痕</td></tr>
+<tr><td>新设计/新优化/新封禁诉求</td><td><b>默认拒绝</b>；确需变更必须附代码与基准数据走 §18，同轨进入</td></tr>
+</table>
+<h3>13.2 调试/新接口决策树（律③的展开）</h3>
+<pre><code>调试需求出现
+├─ 外部客户端排障必需？
+│   ├─ 能折叠进既有 7 事件的既有字段 → 折叠
+│   └─ 不能 → §18 门槛（附代码+基准数据），默认拒绝
+├─ 仅开发/CI 需要 → 测试档：#[cfg(test)] / dev-dep / feature="debug-tools"
+└─ 生产运维需要但客户端无关 → 诊断档：进程内 tracing 或 runtime-dir 文件（schema_version）
+
+新原子立项 → interpop-atoms/src/&lt;atom&gt;.rs 单文件 + 四 trait 实现
+          → 对既有原子零侵入（OCP）；新 IntentAction 变体 → §18
+新线程任务 → WorkerJob 加变体 → 附 Criterion 数据走 §18
+新下行事件 → ⛔ 默认拒绝（§14.2 收敛即防漂移）→ §18</code></pre>
+<blockquote>扩展性的最高形态不是预留口子，而是<b>让新增天然无侵入</b>：单文件原子做到新增即隔离，trait 混入做到能力即插拔，workspace 分层做到波及半径有界，MSRV 做到废弃 API 编译期被拒绝。冻结冻的是<b>证据标准</b>，不是代码本身。</blockquote>
+
+<!-- ======================= 第14章 ======================= -->
+<h2 id="ch14">第14章 · 退出准则总映射与 CI 门禁清单</h2>
+<h3>14.1 §16 四阶段退出准则 ↔ 接口映射</h3>
+<table>
+<tr><th>阶段</th><th>物理断言退出准则</th><th>支撑接口</th></tr>
+<tr><td>P1</td><td>视口精准 / exclusive_zone / Popup 翻转 / Mutter 拒绝制</td><td>P1-1~P1-9</td></tr>
+<tr><td>P2</td><td>原子撑开 / 拖拽无抽搐 / EOF 释放租约</td><td>P2-1~P2-10</td></tr>
+<tr><td>P3</td><td>JSON ≤5μs / 毫秒拉起 / scaffold 归零</td><td>P3-1~P3-12</td></tr>
+<tr><td>P4</td><td>五案卷 / 双通道浸泡 / 封板</td><td>P4-1~P4-11 + 全链</td></tr>
+</table>
+<h3>14.2 CI 门禁清单（G1~G12，只许增不许减）</h3>
+<table>
+<tr><th>#</th><th>门禁</th><th>断言</th><th>来源</th></tr>
+<tr><td>G1</td><td>scaffold 目录清空</td><td>find interpop-scaffold/src 非空即红（.gitkeep 除外）</td><td>§17.3</td></tr>
+<tr><td>G2</td><td>生产 crate 禁偷渡 scaffold</td><td>grep interpop-scaffold 于三 crate Cargo.toml 即红</td><td>§17.3</td></tr>
+<tr><td>G3</td><td>全 workspace 静态编译</td><td>cargo check --workspace --all-targets</td><td>§17.3</td></tr>
+<tr><td>G4</td><td>空载浸泡 + RSS 基线</td><td>60s 静置：基线 ≤25MB，漂移 ≤512KB</td><td>§17.2/17.3</td></tr>
+<tr><td>G5</td><td>泄漏审计</td><td>gpu-leak-audit.log: ACTIVE_LEAKS: 0</td><td>§13.4/§17.3</td></tr>
+<tr><td>G6</td><td>MSRV 地板</td><td>rustc 1.86 全量 check + test</td><td>台账#9</td></tr>
+<tr><td>G7</td><td>stable-latest</td><td>clippy -D warnings（含 deprecated 拒绝）+ test + golden hash</td><td>台账#9</td></tr>
+<tr><td>G8</td><td>升级金丝雀（每周）</td><td>semver 内 update 全门禁 + next-major 预演报告（不阻断）</td><td>台账#12</td></tr>
+<tr><td>G9</td><td>确定性回放金转录</td><td>gold 转录回放终态哈希全等 + P1-9 迁移金表穷举</td><td>台账#7/#14</td></tr>
+<tr><td>G10</td><td>活跃原子水位</td><td>活跃原子总数 ≤ 4096（倒逼 VirtualList 契约）</td><td>台账#4</td></tr>
+<tr><td>G11</td><td>供应链审计</td><td>cargo-audit RUSTSEC 命中 → 强制立即升级（唯一跳过排期通道）</td><td>第9章</td></tr>
+<tr><td>G12</td><td>golden hash 锁输入域</td><td>P4-8S 沙箱自检 + 三元哈希（内置字形 + 锁死 tiny-skia）+ 文档同轨门禁</td><td>§17.1 + 台账#2</td></tr><tr><td>G13</td><td>打包断言</td><td>profile 无 panic=abort(G13-a)/ 特性闭包 / NEEDED 固化 / 发行面零痕迹;Phase 1 末激活,profile 注释自 PR-01 落位</td><td>台账#17/#18</td></tr>
+
+</table>
+<p class="note">通道 B（60Hz patch 灌注）由独立测试作业执行，断言同 G4 漂移标准（§17.3 脚注；脚本正文归工程层随 Phase 4 交付——§18.1-1 有意预留，<b>禁止文档层预写</b>）。</p>
+
+<!-- ======================= 附录 ======================= -->
+<h2 id="appA">附录A · 禁止立项清单（接口形态）</h2>
+<table>
+<tr><th>#</th><th>禁止形态</th><th>依据</th></tr>
+<tr><td>1</td><td>C-ABI 动态库插件注册接口</td><td>§0-#1；扩展唯一合法形态 = NDJSON over UDS + Sidecar 进程</td></tr>
+<tr><td>2</td><td>为 badge/chip/session_tile 新建原子文件或 L0 变体</td><td>§9 守卫 / §18.1-2</td></tr>
+<tr><td>3</td><td>Lerp / 线性插值追赶接口</td><td>§0-#4（以接口缺席体现）</td></tr>
+<tr><td>4</td><td>第 8 项下行事件、u16 开放错误变体</td><td>§14.2 / §18.1-5 / 台账#8</td></tr>
+<tr><td>5</td><td>X11 窗口属性残留（_NET_WM_*）</td><td>§0-#2</td></tr>
+<tr><td>6</td><td>内核直采 DMA-BUF 显存流接口</td><td>§0-#6；法定路径 = wl_subsurface（P4-4）</td></tr>
+<tr><td>7</td><td>三线程拓扑 / Taffy 出环 / 白名单外后台任务</td><td>§0-#5 / §11.1 / P3-9</td></tr>
+<tr><td>8</td><td>slider 业务阈值硬编码（15% 防黑）</td><td>§0-#3；min/max/step 全外部声明</td></tr>
+<tr><td>9</td><td>生产二进制携带测试脚手架 / ci_sandbox 入 render 生产路径</td><td>§15.3 / 台账#2-③</td></tr>
+<tr><td>10</td><td>begin_dismiss 式层次倒挂签名（渲染层持锁参数）</td><td>台账#1</td></tr>
+<tr><td>11</td><td>生产版全量日志线程（未走 §18 白名单扩充程序）</td><td>§11.1 / 律③</td></tr>
+<tr><td>12</td><td>「CPU 0.00% / 内存 &lt;20MB」营销口径断言</td><td>§0-#7；科学区间 15~25MB</td></tr>
+</table>
+
+<h2 id="appB">附录B · 白皮书条款交叉引用索引</h2>
+<table>
+<tr><th>白皮书条款</th><th>对应接口</th></tr>
+<tr><td>§0 七封禁</td><td>附录A（以"接口缺席"或"法定替代"体现）</td></tr>
+<tr><td>§2 宪法四铁律</td><td>L0 全层；推导律①</td></tr>
+<tr><td>§5.1/5.2/5.3</td><td>P3-8 / P3-6 + P2-6 + P1-9 / P3-1</td></tr>
+<tr><td>§6.1~6.4</td><td>P1-2~P1-5 / P1-9 / P2-8</td></tr>
+<tr><td>§7</td><td>P1-8 / P2-1</td></tr>
+<tr><td>§8.1~8.3</td><td>P2-9 / P2-6 / P2-4 + P2-10 + P4-11</td></tr>
+<tr><td>§9</td><td>P2-5</td></tr>
+<tr><td>§10</td><td>P2-7</td></tr>
+<tr><td>§11.1/11.2</td><td>P3-7 + P3-9 / P1-6 + P2-9</td></tr>
+<tr><td>§12.1~12.6</td><td>P3-3 + P3-4 / P4-1 + P4-3 / P2-2 熔断</td></tr>
+<tr><td>§13.1~13.4</td><td>P4-4 / P4-5</td></tr>
+<tr><td>§14.1/14.2</td><td>L0 全层 / P3-5 + P4-2</td></tr>
+<tr><td>§15.1~15.3</td><td>第9章 + 1.3 工程律 / 模块归置 / P3-10 + G1/G2</td></tr>
+<tr><td>§16 四阶段</td><td>第14章 14.1</td></tr>
+<tr><td>§17 全部</td><td>第14章 14.2 + P4-8</td></tr>
+<tr><td>§18 / §18.1</td><td>第13章 + 第12章台账 + 各处"有意预留"注记</td></tr>
+</table>
+
+<p style="margin-top:50px;border-top:1px solid #ccc;padding-top:14px" class="note">
+INTERPOP · 接口总清单 · 全局执行蓝图 —— 白皮书唯一基准之工程展开 · 单文件自包含 · 零外部依赖 · 纯静态 HTML · 打印留档友好<br>
+本文档随首个实现 commit 同轨入库；台账 append-only；docs-only 变更被 G12 文档同轨门禁拦截。
+</p>
+</body>
+</html>

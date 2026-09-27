@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>INTERPOP PROJECT_MAP · 代码↔治理双向索引</title>
+<style>
+  body{font-family:"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;max-width:1000px;
+       margin:0 auto;padding:24px 20px 70px;line-height:1.6;color:#1c1c1c;background:#fdfdfb}
+  h1{font-size:23px;border-bottom:3px solid #1f2937;padding-bottom:8px}
+  h2{font-size:19px;margin-top:36px;border-left:5px solid #1f2937;padding-left:10px}
+  code{background:#eef1f5;padding:1px 5px;border-radius:4px;font-size:13px}
+  pre{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;overflow-x:auto;
+      font-size:12.5px;line-height:1.45}
+  table{border-collapse:collapse;width:100%;font-size:13px;margin:10px 0}
+  th,td{border:1px solid #c9c9c2;padding:5px 8px;text-align:left;vertical-align:top}
+  th{background:#1f2937;color:#fff}
+  ul{list-style:none;padding-left:6px;margin:6px 0}
+  li{padding:3px 0;border-bottom:1px dotted #ddd}
+  .life{font-size:11.5px;color:#8a6d1a;background:#fdf3d7;border:1px solid #e8d9a0;
+        border-radius:8px;padding:0 6px;margin-left:6px;white-space:nowrap}
+  .note{font-size:13px;color:#444}.note b{color:#1c1c1c}
+  .seed{font-size:11.5px;color:#6b4a00}
+  @media print{body{max-width:none;font-size:11px;padding:0}pre{white-space:pre-wrap}}
+  pre, pre code { background: #0f172a; color: #e2e8f0 !important; }
+  pre code * { color: inherit; }
+  ::selection { background: #2563eb; color: #ffffff; }
+</style>
+</head>
+<body>
+
+<h1>PROJECT_MAP · 代码↔治理双向索引<br>
+<span style="font-size:14px;color:#555">总架构树 · 文件路标 · 生命周期标注 · 结构变更日志</span></h1>
+
+<p class="note"><b>定位铁律</b>：本图是<b>索引，不是镜像</b>——只指路标（文件 / 一句话职责 / 治理标签），
+⛔ 永不记录方法签名与控制流程。
+<b>文域切分</b>：docs/ 下文档归 D-Gov 登记，本图只留指针，不展开——防第二真相源。<br>
+<span class="seed">当前演进状态：Phase 0 · 初始基线态 (准备开启 Phase 1 · PR-01)</span></p>
+
+<h2>1 · 总目录架构树</h2>
+<pre><code>~/Workspace/projects/interpop/
+├── progress.json            # 运行态：现在在哪 (JSON 本体，机器读取)
+├── AGENTS.html              # 行为规范：开发纪律与红线守则
+├── PROJECT_MAP.html         # 本图：代码↔治理双向索引
+├── docs/                    # 宪法与全局执行指导书
+└── tests/tools/map_check.py # 治理地图与架构拓扑复合机检工具
+</code></pre>
+
+<h2>2 · 物理源文件明细 (与源码树 1:1 双向映射)</h2>
+<ul>
+<!-- 待 PR-01 启动建立 Cargo 模块与物理源文件 -->
+</ul>
+
+<h2>3 · 结构变更日志 (append-only)</h2>
+<table>
+<tr><th>Phase</th><th>PR</th><th>动作</th><th>文件</th><th>缘由 (治理引用)</th></tr>
+<tr><td>P0</td><td>-</td><td>置</td><td>三治理文件 + docs 宪法文件</td><td>Phase 0 初始化基线</td></tr>
+</table>
+
+<h2>4 · 维护规则</h2>
+<p class="note">新增 src 物理源文件时，同 PR 内向第 2 节增补 <code>data-file</code> 条目，并在第 3 节追加日志行；严禁修改既有历史行。</p>
+
+<p style="margin-top:40px;border-top:1px solid #ccc;padding-top:12px" class="note">
+INTERPOP · PROJECT_MAP.html · 治理地图动态基线
+</p>
+</body>
+</html>

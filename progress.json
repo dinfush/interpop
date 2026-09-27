@@ -1,0 +1,10 @@
+{
+  "current_phase": "Phase 1",
+  "current_pr": "PR-01",
+  "status": "READY_TO_START",
+  "next_action": "启动 Phase 1 · PR-01: L0 契约定稿 + golden JSON 锁定 + CI 骨架",
+  "blocked_by_hitl": false,
+  "halt_reason": null,
+  "gates_passed": [],
+  "ci_last_commit": null
+}
